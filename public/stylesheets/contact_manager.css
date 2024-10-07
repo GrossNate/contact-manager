@@ -1,0 +1,72 @@
+body {
+  margin: 2em;
+  font-family: "Kiwi Maru", serif;
+}
+.editButton {
+  background-color: lightyellow;
+}
+.deleteButton {
+  background-color: lightcoral;
+}
+.tag {
+  /* display: inline-block; */
+  border: 1px dotted lightgrey;
+  padding:0px 5px 2px 5px;
+}
+.tagDd {
+  min-height: 2em;
+}
+ul#contactList {
+  list-style: none;
+  padding-left: 0;
+  margin: 1em 0;
+}
+#contactList dl {
+  padding: 0;
+  margin: .25em;
+}
+#contactList li {
+  display: inline-block;
+  border: 1px dotted darkgrey;
+  height: 13em;
+  width: 25%;
+  min-width: 200px;
+  margin-right: .25em;
+  margin-bottom: .25em;
+  padding-left: .25em;
+}
+
+#contactList dt {
+  font-weight: bold;
+}
+
+@media (min-width: 20px) {
+  /* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
+  body {
+    background-color: red;
+  }
+}
+@media (min-width: 320px) {
+  /* smartphones, portrait iPhone, portrait 480x320 phones (Android) */
+  body {
+    background-color: lightyellow;
+  }
+}
+@media (min-width: 480px) {
+  /* smartphones, Android phones, landscape iPhone */
+}
+@media (min-width: 600px) {
+  /* portrait tablets, portrait iPad, e-readers (Nook/Kindle), landscape 800x480 phones (Android) */
+}
+@media (min-width: 801px) {
+  /* tablet, landscape iPad, lo-res laptops ands desktops */
+}
+@media (min-width: 1025px) {
+  /* big landscape tablets, laptops, and desktops */
+  body {
+    background-color: white;
+  }
+}
+@media (min-width: 1281px) {
+  /* hi-res laptops and desktops */
+}
