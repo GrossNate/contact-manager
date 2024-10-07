@@ -22,14 +22,27 @@
       <h1>Nate's Simple Contact Manager</h1>
     </header>
     <nav>
-      <input type="button" id="addContactButton" value="Add Contact" />
-      <input
-        type="text"
-        autocomplete="off"
-        id="searchInputText"
-        placeholder="Search"
-        name="searchInputText"
-      />
+      <table>
+        <tr>
+          <td>
+            <input type="button" id="addContactButton" value="Add Contact" />
+          </td>
+          <td>
+            <input
+              type="text"
+              autocomplete="off"
+              id="searchInputText"
+              placeholder="Search"
+              name="searchInputText"
+            />
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td id="searchTagSelector">
+          </td>
+        </tr>
+      </table>
     </nav>
     <main>
       <p id="loadingP">Loading . . .</p>
@@ -96,13 +109,29 @@
           <dt>Tags</dt>
           <dd class="tagDd">
             {{#each tags}}
-            <span class="tag">{{tag}}</span>
+            {{> tagPartial}}
             {{/each}}
           </dd>
         </dl>
         <input type="button" class="editButton" value="✏︎ Edit">
         <input type="button" class="deleteButton" value="🗑️ Delete">
       </li>
+    </script>
+    <script id="tagPartial" type="text/x-handlebars">
+      <span
+        {{#if selected}}
+        class="tag selected"
+        {{else}}
+        class="tag"
+        {{/if}}
+      >
+        {{tag}}
+      </span>
+    </script>
+    <script id="tagSelectorTemplate" type="text/x-handlebars">
+      {{#each tags}}
+      {{> tagPartial}}
+      {{/each}}
     </script>
   </body>
 </html>
