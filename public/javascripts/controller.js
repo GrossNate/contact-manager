@@ -1,3 +1,8 @@
+// Adding these import statements isn't necessary for app functionality, but
+// they enable JSDoc to give much more helpful code completion hints.
+import { Model } from "./model.js";
+import { View } from "./view.js";
+
 export class Controller {
   #model;
   #view;
@@ -12,17 +17,38 @@ export class Controller {
   }
 
   async init() {
-      let contactData = await this.#model.refreshContacts();
-      this.#view.renderContactList(contactData);
-      this.#view.renderSearchTagSelector(contactData);
-      this.#view.renderAddContactExistingTagsSelector(contactData);
-      this.#setupEventHandlers();
-    // this.#view.renderContactList(await this.#model.getContacts());
-    // this.#view.renderSearchTagSelector(await this.#model.getContacts());
-    // this.#view.renderAddContactExistingTagsSelector(
-    //   await this.#model.getContacts(),
-    // );
-    // this.#setupEventHandlers();
+    await this.refreshView();
+    this.#setupEventHandlers();
+  }
+
+  async refreshView() {
+    let contactData = await this.#model.refreshContacts();
+    this.#view.renderContactList(contactData);
+    this.#view.renderSearchTagSelector(contactData);
+    this.#view.renderAddContactExistingTagsSelector(contactData);
+  }
+  /**
+   * @param {DOMStringMap} dataset
+   * @param {string} slot
+   * @param {string} value
+   */
+  static addValueToDatasetSlot(dataset, slot, value) {
+    let valuesArr = dataset[slot].split(",").filter((value) => value != "");
+    if (valuesArr.includes(value)) return;
+    valuesArr.push(value);
+    dataset[slot] = valuesArr.join(",");
+  }
+
+  /**
+   * @param {DOMStringMap} dataset
+   * @param {string} slot
+   * @param {string} value
+   */
+  static removeValueFromDatasetSlot(dataset, slot, value) {
+    let valuesArr = dataset[slot].split(",").filter((value) => value != "");
+    if (!valuesArr.includes(value)) return;
+    valuesArr.splice(valuesArr.indexOf(value), 1);
+    dataset[slot] = valuesArr.join(",");
   }
 
   #setupEventHandlers() {
@@ -30,10 +56,70 @@ export class Controller {
       "submit",
       this.#handleAddContactSubmit.bind(this),
     );
-    Array.from(this.#view.getDeleteButtons()).forEach(button => button.addEventListener(
+    this.#view.getContactList().addEventListener(
       "click",
-      this.#handleDeleteContact.bind(this),
-    ));
+      (event) => {
+        if (event.target.classList.contains("deleteButton")) {
+          this.#handleDeleteContact.bind(this)(event);
+        }
+      },
+    );
+    this.#view.getSearchTagSelector().addEventListener(
+      "dblclick",
+      (event) => {
+        const classList = event.target.classList;
+        if (classList.contains("tag")) {
+          event.preventDefault();
+          const dataset = this.#view.getSearchTagSelector().dataset;
+          if (classList.contains("selected")) {
+            classList.remove("selected");
+            Controller.removeValueFromDatasetSlot(
+              dataset,
+              "selectedTags",
+              event.target.dataset.tag,
+            );
+          }
+          classList.add("excluded");
+          Controller.addValueToDatasetSlot(
+            dataset,
+            "excludedTags",
+            event.target.dataset.tag,
+          );
+        }
+      },
+    );
+    this.#view.getSearchTagSelector().addEventListener(
+      "click",
+      (event) => {
+        const classList = event.target.classList;
+        if (classList.contains("tag")) {
+          event.preventDefault();
+          const dataset = this.#view.getSearchTagSelector().dataset;
+          if (classList.contains("excluded")) {
+            classList.remove("excluded");
+            Controller.removeValueFromDatasetSlot(
+              dataset,
+              "excludedTags",
+              event.target.dataset.tag,
+            );
+          } else if (classList.contains("selected")) {
+            classList.remove("selected");
+            Controller.removeValueFromDatasetSlot(
+              dataset,
+              "selectedTags",
+              event.target.dataset.tag,
+            );
+          } else {
+            classList.add("selected");
+            Controller.addValueToDatasetSlot(
+              dataset,
+              "selectedTags",
+              event.target.dataset.tag,
+            );
+          }
+        }
+      },
+    );
   }
 
   // Event Handlers
@@ -51,7 +137,7 @@ export class Controller {
 
     let result = await this.#model.addContact(formData);
     if (result) {
-      this.init();
+      this.refreshView();
       this.#view.clearAndCloseAddContactDialog();
     } else {
       alert("Failure!");
@@ -60,9 +146,11 @@ export class Controller {
 
   async #handleDeleteContact(event) {
     event.preventDefault();
-    let contactDeleted = await this.#model.deleteContact(event.target.dataset.id);
+    let contactDeleted = await this.#model.deleteContact(
+      event.target.dataset.id,
+    );
     if (contactDeleted) {
-      this.init();
+      this.refreshView();
       // let contactData = await this.#model.refreshContacts();
       // this.#view.renderContactList(contactData);
       // this.#view.renderSearchTagSelector(contactData);

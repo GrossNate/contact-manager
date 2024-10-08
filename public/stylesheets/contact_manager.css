@@ -14,14 +14,20 @@ body {
   padding:0px 5px 2px 5px;
   margin-right: .25em;
   margin-bottom: .15em;
-  /* height: 6em; */
+  /* following is just about preventing selection on double-click */
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
-#addContactForm .tag {
+#addContactForm .tag, #searchTagSelector .tag {
   cursor: pointer;
 }
 
 .selected {
   background-color: lightgreen;
+}
+.excluded {
+  background-color: lightcoral;
 }
 .tagDd {
   min-height: 2em;

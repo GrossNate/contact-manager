@@ -68,4 +68,18 @@ export class Model {
       console.error(`Failed to delete contact: ${error}`);
     }
   }
+
+  getAvailableTags(contacts = this.#contacts) {
+    return contacts
+      .flatMap((contact) => contact.tags)
+      .map((tagObj) => tagObj?.tag)
+      .sort()
+      .reduce((uniqueTags, tag) => {
+        if (tag && !uniqueTags.includes(tag)) {
+          uniqueTags.push(tag);
+        }
+        return uniqueTags;
+      }, [])
+      .map((tagString) => ({ tag: tagString }));
+  }
 }

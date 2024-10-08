@@ -13,7 +13,10 @@ export class View {
   #searchTagSelector;
   #addContactExistingTags;
   #addContactForm;
-
+  
+  /**
+  * @property {HTMLTableCellElement} #searchTagSelector
+  */
   constructor(document) {
     this.#document = document;
     this.#contactList = this.#document.querySelector("#contactList");
@@ -75,8 +78,8 @@ export class View {
         this.#addContactDialog.close();
   }
 
-  getDeleteButtons() {
-    return this.#document.querySelectorAll(".deleteButton");
+  getContactList() {
+    return this.#contactList;
   }
   getAddContactExistingTags() {
     return this.#addContactExistingTags;
@@ -84,6 +87,10 @@ export class View {
   getAddContactForm() {
     return this.#addContactForm;
   }
+  getSearchTagSelector() {
+    return this.#searchTagSelector;
+  }
+  // Should delete this after converting to Model.prototype.getAvailableTags()
   #extractTagsFromContacts(contacts) {
     return contacts
       .flatMap((contact) => contact.tags)
@@ -99,9 +106,7 @@ export class View {
   }
 
   renderContactList(contacts) {
-    this.#contactList.innerHTML = this.#contactListTemplate({
-      contacts: contacts,
-    });
+    this.#contactList.innerHTML = this.#contactListTemplate({ contacts });
   }
 
   renderSearchTagSelector(contacts) {

@@ -39,7 +39,7 @@
         </tr>
         <tr>
           <td></td>
-          <td id="searchTagSelector"></td>
+          <td data-selected-tags data-excluded-tags id="searchTagSelector"></td>
         </tr>
       </table>
     </nav>
@@ -99,9 +99,13 @@
       Because I'm excited about semantic HTML5 elements, here's a footer!
     </footer>
     <script id="contactListTemplate" type="text/x-handlebars">
+        {{#if contacts}}
         {{#each contacts}}
         {{> contactPartial}}
         {{/each}}
+        {{else}}
+        <li>No contacts yet. Click "Add Contact" above to get started!</li>
+        {{/if}}
     </script>
     <script id="contactPartial" type="text/x-handlebars">
         <li>
