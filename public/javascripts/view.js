@@ -15,7 +15,7 @@ export class View {
   #addContactForm;
   
   /**
-  * @property {HTMLTableCellElement} #searchTagSelector
+  * @param {Document} document
   */
   constructor(document) {
     this.#document = document;

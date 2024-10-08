@@ -27,13 +27,14 @@ export class Controller {
     this.#view.renderSearchTagSelector(contactData);
     this.#view.renderAddContactExistingTagsSelector(contactData);
   }
+
   /**
    * @param {DOMStringMap} dataset
    * @param {string} slot
    * @param {string} value
    */
   static addValueToDatasetSlot(dataset, slot, value) {
-    let valuesArr = dataset[slot].split(",").filter((value) => value != "");
+    let valuesArr = Controller.getValuesFromDatasetSlot(dataset, slot);
     if (valuesArr.includes(value)) return;
     valuesArr.push(value);
     dataset[slot] = valuesArr.join(",");
@@ -45,10 +46,43 @@ export class Controller {
    * @param {string} value
    */
   static removeValueFromDatasetSlot(dataset, slot, value) {
-    let valuesArr = dataset[slot].split(",").filter((value) => value != "");
+    let valuesArr = Controller.getValuesFromDatasetSlot(dataset, slot);
     if (!valuesArr.includes(value)) return;
     valuesArr.splice(valuesArr.indexOf(value), 1);
     dataset[slot] = valuesArr.join(",");
+  }
+
+  /**
+   * @param {DOMStringMap} dataset
+   * @param {string} slot
+   * @param {string} value
+   * @return {string[]}
+   */
+  static getValuesFromDatasetSlot(dataset, slot) {
+    return dataset[slot].split(",").filter((value) => value != "");
+  }
+
+  async #refreshSearch() {
+    const searchTagsDataset = this.#view.getSearchTagSelector().dataset;
+    const excludedTags = Controller.getValuesFromDatasetSlot(
+      searchTagsDataset,
+      "excludedTags",
+    );
+    const selectedTags = Controller.getValuesFromDatasetSlot(
+      searchTagsDataset,
+      "selectedTags",
+    );
+    let contactData = await this.#model.getContacts();
+    contactData = contactData.filter((contact) =>
+      contact.tags.every(({ tag }) => !excludedTags.includes(tag))
+    );
+    contactData = contactData.filter((contact) =>
+      selectedTags.every((selectedTag) =>
+        contact.tags.map(({ tag }) => tag).includes(selectedTag)
+      )
+    );
+    console.log(contactData);
+    this.#view.renderContactList(contactData);
   }
 
   #setupEventHandlers() {
@@ -85,6 +119,7 @@ export class Controller {
             "excludedTags",
             event.target.dataset.tag,
           );
+          this.#refreshSearch();
         }
       },
     );
@@ -117,6 +152,7 @@ export class Controller {
               event.target.dataset.tag,
             );
           }
+          this.#refreshSearch();
         }
       },
     );
@@ -151,11 +187,6 @@ export class Controller {
     );
     if (contactDeleted) {
       this.refreshView();
-      // let contactData = await this.#model.refreshContacts();
-      // this.#view.renderContactList(contactData);
-      // this.#view.renderSearchTagSelector(contactData);
-      // this.#view.renderAddContactExistingTagsSelector(contactData);
-      // this.#setupEventHandlers();
     } else {
       alert("Deletion failed!");
     }

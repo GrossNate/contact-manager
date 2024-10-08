@@ -1,10 +1,27 @@
 export class Model {
   #contacts;
 
+  /**
+   * @typedef {Object} Contact
+   * @param {number} id
+   * @param {string} full_name
+   * @param {string} email
+   * @param {string} phone_number
+   * @param {string[]} tags
+   */
+
+  /**
+   * @typedef {Contact[]} Contacts
+   */
+
   constructor() {
     this.#contacts = [];
   }
 
+  /**
+   * @async
+   * @return {Contacts}
+   */
   async refreshContacts() {
     try {
       const response = await fetch("/api/contacts");
@@ -21,6 +38,10 @@ export class Model {
     }
   }
 
+  /**
+   * @async
+   * @return {Contacts}
+   */
   async getContacts() {
     if (this.#contacts.length === 0) {
       return await this.refreshContacts();
@@ -29,6 +50,11 @@ export class Model {
     }
   }
 
+  /**
+   * @async
+   * @param {FormData} formData
+   * @returns {boolean}
+   */
   async addContact(formData) {
     let formDataObj = {};
     formData.entries().forEach((entry) =>
@@ -52,6 +78,11 @@ export class Model {
     }
   }
 
+  /**
+   * @async
+   * @param {integer} contactId
+   * @returns {boolean}
+   */
   async deleteContact(contactId) {
     try {
       const response = await fetch(`/api/contacts/${contactId}`, {
