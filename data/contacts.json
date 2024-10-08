@@ -19,5 +19,54 @@
     "email": "ph@example.com",
     "phone_number": "54321098761",
     "tags": null
+  },
+  {
+    "full_name": "Foo",
+    "phone_number": null,
+    "email": null,
+    "tags": "work",
+    "id": 4
+  },
+  {
+    "full_name": "Bar",
+    "phone_number": null,
+    "email": null,
+    "tags": null,
+    "id": 5
+  },
+  {
+    "full_name": "Bar",
+    "phone_number": null,
+    "email": null,
+    "tags": null,
+    "id": 6
+  },
+  {
+    "full_name": "Baz",
+    "phone_number": null,
+    "email": null,
+    "tags": null,
+    "id": 7
+  },
+  {
+    "full_name": "Baz",
+    "phone_number": null,
+    "email": null,
+    "tags": null,
+    "id": 8
+  },
+  {
+    "full_name": "Baz",
+    "phone_number": null,
+    "email": null,
+    "tags": null,
+    "id": 9
+  },
+  {
+    "full_name": "Baz",
+    "phone_number": null,
+    "email": null,
+    "tags": null,
+    "id": 10
   }
 ]

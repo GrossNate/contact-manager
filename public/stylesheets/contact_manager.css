@@ -16,6 +16,10 @@ body {
   margin-bottom: .15em;
   /* height: 6em; */
 }
+#addContactForm .tag {
+  cursor: pointer;
+}
+
 .selected {
   background-color: lightgreen;
 }

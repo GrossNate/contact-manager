@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="stylesheets/contact_manager.css" />
     <!-- <script src="/javascripts/jquery.js"></script> -->
     <script src="/javascripts/handlebars.js"></script>
-    <script src="/javascripts/contact_manager.js"></script>
+    <script type="module" src="/javascripts/contact_manager.js"></script>
   </head>
   <body>
     <header>
@@ -39,8 +39,7 @@
         </tr>
         <tr>
           <td></td>
-          <td id="searchTagSelector">
-          </td>
+          <td id="searchTagSelector"></td>
         </tr>
       </table>
     </nav>
@@ -48,7 +47,7 @@
       <p id="loadingP">Loading . . .</p>
       <ul id="contactList"></ul>
       <dialog id="addContactDialog">
-        <form>
+        <form id="addContactForm">
           <table>
             <tr>
               <td>
@@ -76,6 +75,17 @@
             </tr>
             <tr>
               <td colspan="2">
+                <span id="addContactExistingTags" data-tags=""></span>
+                <input
+                  type="text"
+                  id="addContactNewTagsInput"
+                  name="addContactNewTagsInput"
+                  placeholder="new tags (space-separated)"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
                 <input type="submit" value="Submit" />
                 <input type="button" value="Cancel" />
               </td>
@@ -83,39 +93,38 @@
           </table>
         </form>
       </dialog>
+      <dialog id="editContactDialog"></dialog>
     </main>
     <footer>
       Because I'm excited about semantic HTML5 elements, here's a footer!
     </footer>
     <script id="contactListTemplate" type="text/x-handlebars">
-      <ul id="contactList">
         {{#each contacts}}
         {{> contactPartial}}
         {{/each}}
-      </ul>
     </script>
     <script id="contactPartial" type="text/x-handlebars">
-      <li>
-        <dl>
-          <dt>Name</dt>
-          <dd>{{full_name}}</dd>
+        <li>
+          <dl>
+            <dt>Name</dt>
+            <dd>{{full_name}}</dd>
 
-          <dt>Phone</dt>
-          <dd>{{phone_number}}</dd>
+            <dt>Phone</dt>
+            <dd>{{phone_number}}</dd>
 
-          <dt>Email</dt>
-          <dd>{{email}}</dd>
+            <dt>Email</dt>
+            <dd>{{email}}</dd>
 
-          <dt>Tags</dt>
-          <dd class="tagDd">
-            {{#each tags}}
-            {{> tagPartial}}
-            {{/each}}
-          </dd>
-        </dl>
-        <input type="button" class="editButton" value="✏︎ Edit">
-        <input type="button" class="deleteButton" value="🗑️ Delete">
-      </li>
+            <dt>Tags</dt>
+            <dd class="tagDd">
+              {{#each tags}}
+              {{> tagPartial}}
+              {{/each}}
+            </dd>
+          </dl>
+          <input type="button" class="editButton" data-id="{{id}}" value="✏︎ Edit">
+          <input type="button" class="deleteButton" data-id="{{id}}" value="🗑️ Delete">
+        </li>
     </script>
     <script id="tagPartial" type="text/x-handlebars">
       <span
@@ -124,6 +133,7 @@
         {{else}}
         class="tag"
         {{/if}}
+        data-tag="{{tag}}"
       >
         {{tag}}
       </span>
