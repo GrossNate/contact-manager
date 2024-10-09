@@ -18,6 +18,15 @@ export class Model {
     this.#contacts = [];
   }
 
+  static processContact(contact) {
+    contact.tags = contact.tags
+      ?.split(",")
+      .sort()
+      .map((tag) => ({
+        tag: tag,
+      }));
+  }
+
   /**
    * @async
    * @return {Contacts}
@@ -26,11 +35,7 @@ export class Model {
     try {
       const response = await fetch("/api/contacts");
       let contacts = await response.json();
-      contacts.forEach((contact) =>
-        contact.tags = contact.tags?.split(",").sort().map((tag) => ({
-          "tag": tag,
-        }))
-      );
+      contacts.forEach((contact) => Model.processContact(contact));
       this.#contacts = contacts;
       return this.#contacts; // this.#contacts;
     } catch (error) {
@@ -57,13 +62,13 @@ export class Model {
    */
   async addContact(formData) {
     let formDataObj = {};
-    formData.entries().forEach((entry) =>
-      formDataObj[entry[0]] = entry[1] ? entry[1] : null
-    );
+    formData
+      .entries()
+      .forEach((entry) => (formDataObj[entry[0]] = entry[1] ? entry[1] : null));
     try {
       const response = await fetch("/api/contacts", {
         method: "POST",
-        "headers": { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formDataObj),
       });
       if (response.status === 201) {
@@ -76,6 +81,28 @@ export class Model {
     } catch (error) {
       console.error(`Failed to create contact: ${error}`);
     }
+  }
+
+  /**
+   *
+   * @param {number} contactId
+   * @returns {Contact}
+   */
+  async getContact(contactId) {
+    try {
+      const response = await fetch(`/api/contacts/${contactId}`, {
+        method: "GET",
+      });
+      if (response.status === 200) {
+        let contact = response.json();
+        Model.processContact(contact);
+        return contact;
+      } else if (response.status === 400) {
+        return false;
+      } else {
+        throw new Error("Couldn't get contact for some unexpected reason.");
+      }
+    } catch (error) {}
   }
 
   /**

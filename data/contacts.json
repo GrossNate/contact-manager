@@ -35,13 +35,6 @@
     "id": 7
   },
   {
-    "full_name": "Pete",
-    "phone_number": null,
-    "email": null,
-    "tags": "work",
-    "id": 8
-  },
-  {
     "full_name": "Darshna",
     "phone_number": null,
     "email": null,
@@ -54,5 +47,19 @@
     "email": "foo.the.fake.person.long.email@gmail.com",
     "tags": null,
     "id": 13
+  },
+  {
+    "full_name": "Laren",
+    "phone_number": null,
+    "email": null,
+    "tags": "school,friend",
+    "id": 14
+  },
+  {
+    "full_name": "Chase",
+    "phone_number": null,
+    "email": null,
+    "tags": "friend,school",
+    "id": 15
   }
 ]

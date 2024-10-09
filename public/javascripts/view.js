@@ -14,6 +14,9 @@ export class View {
   #searchInputText;
   #addContactExistingTags;
   #addContactForm;
+  #editContactDialog;
+  #editContactForm;
+  #editContactExistingTags;
   
   /**
   * @param {Document} document
@@ -30,6 +33,9 @@ export class View {
       "#addContactExistingTags",
     );
     this.#addContactForm = this.#document.querySelector("#addContactForm");
+    this.#editContactDialog = this.#document.querySelector("#editContactDialog");
+    this.#editContactForm = this.#document.querySelector("#editContactForm");
+    this.#editContactExistingTags = this.#document.querySelector("#editContactExistingTags");
 
     // Set up all Handlebars templates
     const contactPartial = this.#document.querySelector("#contactPartial");
@@ -80,6 +86,15 @@ export class View {
         this.#addContactDialog.close();
   }
 
+  /**
+   * 
+   * @param {Contact} contact 
+   */
+  showEditContactDialog(contact) {
+
+    this.#editContactDialog.showModal();
+  }
+
   getContactList() {
     return this.#contactList;
   }
@@ -97,6 +112,9 @@ export class View {
   }
   getAddContactExistingTags() {
     return this.#addContactExistingTags;
+  }
+  getEditContactExistingTags() {
+    return this.#editContactExistingTags;
   }
   // Should delete this after converting to Model.prototype.getAvailableTags()
   #extractTagsFromContacts(contacts) {
@@ -124,9 +142,10 @@ export class View {
     });
   }
 
-  renderAddContactExistingTagsSelector(contacts) {
+  renderExistingTagsSelector(contacts, tagContainer) {
     const existingTags = this.#extractTagsFromContacts(contacts);
-    this.#addContactExistingTags.innerHTML = this.#tagSelectorTemplate({
+    // this.#addContactExistingTags
+    tagContainer.innerHTML = this.#tagSelectorTemplate({
       tags: existingTags,
     });
   }

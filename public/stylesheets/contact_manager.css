@@ -4,9 +4,11 @@ body {
 }
 .editButton {
   background-color: lightyellow;
+  cursor: pointer;
 }
 .deleteButton {
   background-color: lightcoral;
+  cursor: pointer;
 }
 .tag {
   display: inline-block;
@@ -25,9 +27,11 @@ body {
 
 .selected {
   background-color: lightgreen;
+  text-decoration: underline;
 }
 .excluded {
   background-color: lightcoral;
+  text-decoration: line-through;
 }
 .tagDd {
   min-height: 2em;

@@ -25,7 +25,8 @@ export class Controller {
     let contactData = await this.#model.refreshContacts();
     this.#view.renderContactList(contactData);
     this.#view.renderSearchTagSelector(contactData);
-    this.#view.renderAddContactExistingTagsSelector(contactData);
+    this.#view.renderExistingTagsSelector(contactData, this.#view.getAddContactExistingTags());
+    this.#view.renderExistingTagsSelector(contactData, this.#view.getEditContactExistingTags());
   }
 
   /**
@@ -99,6 +100,8 @@ export class Controller {
       (event) => {
         if (event.target.classList.contains("deleteButton")) {
           this.#handleDeleteContact.bind(this)(event);
+        } else if (event.target.classList.contains("editButton")) {
+          this.#handleEditContact.bind(this)(event);
         }
       },
     );
@@ -218,6 +221,16 @@ export class Controller {
       this.refreshView();
     } else {
       alert("Deletion failed!");
+    }
+  }
+  
+  async #handleEditContact(event) {
+    event.preventDefault();
+    let contact = await this.#model.getContact(event.target.dataset.id);
+    if (contact) {
+      this.#view.showEditContactDialog(contact);
+    } else {
+      alert("Couldn't find contact to edit.");
     }
   }
 }
