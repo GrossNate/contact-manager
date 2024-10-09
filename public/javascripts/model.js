@@ -4,29 +4,11 @@ export class Model {
   #contacts;
 
   /**
-   * @typedef {Object} Contact
-   * @param {number} id
-   * @param {string} full_name
-   * @param {string} email
-   * @param {string} phone_number
-   * @param {string[]} tags
-   */
-
-  /**
    * @typedef {Contact[]} Contacts
    */
 
   constructor() {
     this.#contacts = [];
-  }
-
-  static processContact(contact) {
-    contact.tags = contact.tags
-      ?.split(",")
-      .sort()
-      .map((tag) => ({
-        tag: tag,
-      }));
   }
 
   /**
@@ -37,7 +19,6 @@ export class Model {
     try {
       const response = await fetch("/api/contacts");
       let contacts = await response.json();
-      // contacts.forEach((contact) => Model.processContact(contact));
       this.#contacts = contacts.map(contact => new Contact(contact));
       return this.#contacts; // this.#contacts;
     } catch (error) {
@@ -97,8 +78,7 @@ export class Model {
       });
       if (response.status === 200) {
         let contact = await response.json();
-        Model.processContact(contact);
-        return contact;
+        return new Contact(contact);
       } else if (response.status === 400) {
         return false;
       } else {
@@ -129,10 +109,16 @@ export class Model {
     }
   }
 
+  /**
+   * 
+   * @param {Contacts} contacts 
+   * @returns {Object[]}
+   */
   getAvailableTags(contacts = this.#contacts) {
-    return contacts
-      .flatMap((contact) => contact.tags)
-      .map((tagObj) => tagObj?.tag)
+    // return contacts
+      // .flatMap((contact) => contact.tags)
+      // .map((tagObj) => tagObj?.tag)
+      return contacts.flatMap(contact => contact.getTagsArr())
       .sort()
       .reduce((uniqueTags, tag) => {
         if (tag && !uniqueTags.includes(tag)) {

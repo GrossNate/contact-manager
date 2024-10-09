@@ -24,9 +24,9 @@ export class Controller {
   async refreshView() {
     let contactData = await this.#model.refreshContacts();
     this.#view.renderContactList(contactData);
-    this.#view.renderSearchTagSelector(contactData);
-    this.#view.renderExistingTagsSelector(contactData, this.#view.getAddContactExistingTags());
-    this.#view.renderExistingTagsSelector(contactData, this.#view.getEditContactExistingTags());
+    this.#view.renderExistingTagsSelector(this.#model.getAvailableTags(), this.#view.getSearchTagSelector());
+    this.#view.renderExistingTagsSelector(this.#model.getAvailableTags(), this.#view.getAddContactExistingTags());
+    this.#view.renderExistingTagsSelector(this.#model.getAvailableTags(), this.#view.getEditContactExistingTags());
   }
 
   /**

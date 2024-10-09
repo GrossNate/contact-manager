@@ -13,13 +13,13 @@ export class Contact {
     /**
      * @type {Object[]}
      */
-    this.tags = contactBareObj.tags
+    this.tags = (contactBareObj.tags
       ?.split(",")
       .sort()
       .filter(tagStr => tagStr != '')
       .map((tag) => ({
         tag: tag,
-      }));
+      })) || []);
   }
   
   /**

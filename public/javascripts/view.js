@@ -194,35 +194,12 @@ export class View {
   getEditContactExistingTags() {
     return this.#editContactExistingTags;
   }
-  // Should delete this after converting to Model.prototype.getAvailableTags()
-  #extractTagsFromContacts(contacts) {
-    return contacts
-      .flatMap((contact) => contact.tags)
-      .map((tagObj) => tagObj?.tag)
-      .sort()
-      .reduce((uniqueTags, tag) => {
-        if (tag && !uniqueTags.includes(tag)) {
-          uniqueTags.push(tag);
-        }
-        return uniqueTags;
-      }, [])
-      .map((tagString) => ({ tag: tagString }));
-  }
 
   renderContactList(contacts) {
     this.#contactList.innerHTML = this.#contactListTemplate({ contacts });
   }
 
-  renderSearchTagSelector(contacts) {
-    const existingTags = this.#extractTagsFromContacts(contacts);
-    this.#searchTagSelector.innerHTML = this.#tagSelectorTemplate({
-      tags: existingTags,
-    });
-  }
-
-  renderExistingTagsSelector(contacts, tagContainer) {
-    const existingTags = this.#extractTagsFromContacts(contacts);
-    // this.#addContactExistingTags
+  renderExistingTagsSelector(existingTags, tagContainer) {
     tagContainer.innerHTML = this.#tagSelectorTemplate({
       tags: existingTags,
     });
