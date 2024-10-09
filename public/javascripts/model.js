@@ -1,3 +1,5 @@
+import { Contact} from "./contact.js";
+
 export class Model {
   #contacts;
 
@@ -35,8 +37,8 @@ export class Model {
     try {
       const response = await fetch("/api/contacts");
       let contacts = await response.json();
-      contacts.forEach((contact) => Model.processContact(contact));
-      this.#contacts = contacts;
+      // contacts.forEach((contact) => Model.processContact(contact));
+      this.#contacts = contacts.map(contact => new Contact(contact));
       return this.#contacts; // this.#contacts;
     } catch (error) {
       console.error(`Failed to fetch contacts: ${error}`);

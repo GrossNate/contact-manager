@@ -89,6 +89,49 @@ export class View {
         event.preventDefault();
         this.#editContactDialog.close();
       });
+    
+    this.#editContactExistingTags.addEventListener("click", (event) => {
+      if (event.target.classList.contains("tag")) {
+        const tagClicked = event.target.dataset.tag;
+        const tagDataset = this.#editContactExistingTags.dataset;
+        if (
+          tagDataset.tags
+            .split(",")
+            .includes(tagClicked)
+        ) {
+          tagDataset.tags = tagDataset.tags.split(",").filter((tag) =>
+            tag != tagClicked
+          ).join(",");
+          event.target.classList.remove("selected");
+        } else {
+          tagDataset.tags = tagDataset.tags.split(",").concat(tagClicked).join(
+            ",",
+          );
+          event.target.classList.add("selected");
+        }
+      }
+    });
+    this.#addContactExistingTags.addEventListener("click", (event) => {
+      if (event.target.classList.contains("tag")) {
+        const tagClicked = event.target.dataset.tag;
+        const tagDataset = this.#addContactExistingTags.dataset;
+        if (
+          tagDataset.tags
+            .split(",")
+            .includes(tagClicked)
+        ) {
+          tagDataset.tags = tagDataset.tags.split(",").filter((tag) =>
+            tag != tagClicked
+          ).join(",");
+          event.target.classList.remove("selected");
+        } else {
+          tagDataset.tags = tagDataset.tags.split(",").concat(tagClicked).join(
+            ",",
+          );
+          event.target.classList.add("selected");
+        }
+      }
+    });
   }
 
   clearAndCloseAddContactDialog() {
@@ -109,6 +152,7 @@ export class View {
     editContactForm.elements.full_name.value = contact.full_name;
     editContactForm.elements.phone_number.value = contact.phone_number;
     editContactForm.elements.email.value = contact.email;
+    editContactForm.elements.id.value = contact.id;
     this.#editContactExistingTags.dataset.tags = contact.tags
       .map(({ tag }) => tag)
       .join(",");
@@ -134,6 +178,9 @@ export class View {
   }
   getAddContactForm() {
     return this.#addContactForm;
+  }
+  getEditContactForm() {
+    return this.#editContactForm;
   }
   getSearchTagSelector() {
     return this.#searchTagSelector;

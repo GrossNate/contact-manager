@@ -95,6 +95,11 @@ export class Controller {
       "submit",
       this.#handleAddContactSubmit.bind(this),
     );
+    this.#view.getEditContactForm().addEventListener(
+      "submit",
+      // this.#handleEditContactSubmit.bind(this),
+      console.log
+    );
     this.#view.getContactList().addEventListener(
       "click",
       (event) => {
@@ -167,27 +172,6 @@ export class Controller {
         }
       },
     );
-    this.#view.getAddContactExistingTags().addEventListener("click", (event) => {
-      if (event.target.classList.contains("tag")) {
-        const tagClicked = event.target.dataset.tag;
-        const tagDataset = this.#view.getAddContactExistingTags().dataset;
-        if (
-          tagDataset.tags
-            .split(",")
-            .includes(tagClicked)
-        ) {
-          tagDataset.tags = tagDataset.tags.split(",").filter((tag) =>
-            tag != tagClicked
-          ).join(",");
-          event.target.classList.remove("selected");
-        } else {
-          tagDataset.tags = tagDataset.tags.split(",").concat(tagClicked).join(
-            ",",
-          );
-          event.target.classList.add("selected");
-        }
-      }
-    });
   }
 
   // Event Handlers
