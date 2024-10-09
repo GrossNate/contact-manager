@@ -95,6 +95,9 @@ export class View {
   getSearchInputText() {
     return this.#searchInputText;
   }
+  getAddContactExistingTags() {
+    return this.#addContactExistingTags;
+  }
   // Should delete this after converting to Model.prototype.getAvailableTags()
   #extractTagsFromContacts(contacts) {
     return contacts
@@ -125,27 +128,6 @@ export class View {
     const existingTags = this.#extractTagsFromContacts(contacts);
     this.#addContactExistingTags.innerHTML = this.#tagSelectorTemplate({
       tags: existingTags,
-    });
-    this.#addContactExistingTags.addEventListener("click", (event) => {
-      if (event.target.classList.contains("tag")) {
-        const tagClicked = event.target.dataset.tag;
-        const tagDataset = this.#addContactExistingTags.dataset;
-        if (
-          tagDataset.tags
-            .split(",")
-            .includes(tagClicked)
-        ) {
-          tagDataset.tags = tagDataset.tags.split(",").filter((tag) =>
-            tag != tagClicked
-          ).join(",");
-          event.target.classList.remove("selected");
-        } else {
-          tagDataset.tags = tagDataset.tags.split(",").concat(tagClicked).join(
-            ",",
-          );
-          event.target.classList.add("selected");
-        }
-      }
     });
   }
 }
