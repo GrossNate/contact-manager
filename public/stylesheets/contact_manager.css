@@ -36,6 +36,9 @@ ul#contactList {
   list-style: none;
   padding-left: 0;
   margin: 1em 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 215px);
+  grid-auto-flow: dense;
 }
 #contactList dl {
   padding: 0;
@@ -44,7 +47,7 @@ ul#contactList {
 #contactList li {
   display: inline-block;
   border: 1px dotted darkgrey;
-  height: 13em;
+  min-height: 13em;
   width: 25%;
   min-width: 200px;
   margin-right: .25em;
@@ -54,6 +57,11 @@ ul#contactList {
 
 #contactList dt {
   font-weight: bold;
+}
+
+#contactList dd {
+  min-height: 1.5em;
+  overflow-wrap: break-word;
 }
 
 @media (min-width: 20px) {

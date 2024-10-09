@@ -74,12 +74,13 @@ export class Controller {
       "selectedTags",
     );
     let contactData = await this.#model.getContacts();
+    console.log(contactData);
     contactData = contactData.filter((contact) =>
-      contact.tags.every(({ tag }) => !excludedTags.includes(tag))
+      (contact.tags || []).every(({ tag }) => !excludedTags.includes(tag))
     );
     contactData = contactData.filter((contact) =>
       selectedTags.every((selectedTag) =>
-        contact.tags.map(({ tag }) => tag).includes(selectedTag)
+        (contact.tags || []).map(({ tag }) => tag).includes(selectedTag)
       )
     );
     contactData = contactData.filter((contact) =>
