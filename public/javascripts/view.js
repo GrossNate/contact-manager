@@ -15,27 +15,33 @@ export class View {
   #addContactExistingTags;
   #addContactForm;
   #editContactDialog;
+  /**
+   * @private
+   * @type {HTMLFormElement}
+   * */
   #editContactForm;
   #editContactExistingTags;
-  
+
   /**
-  * @param {Document} document
-  */
+   * @param {Document} document
+   */
   constructor(document) {
     this.#document = document;
     this.#contactList = this.#document.querySelector("#contactList");
     this.#addContactDialog = this.#document.querySelector("#addContactDialog");
-    this.#searchTagSelector = this.#document.querySelector(
-      "#searchTagSelector",
-    );
+    this.#searchTagSelector =
+      this.#document.querySelector("#searchTagSelector");
     this.#searchInputText = this.#document.querySelector("#searchInputText");
     this.#addContactExistingTags = this.#document.querySelector(
-      "#addContactExistingTags",
+      "#addContactExistingTags"
     );
     this.#addContactForm = this.#document.querySelector("#addContactForm");
-    this.#editContactDialog = this.#document.querySelector("#editContactDialog");
+    this.#editContactDialog =
+      this.#document.querySelector("#editContactDialog");
     this.#editContactForm = this.#document.querySelector("#editContactForm");
-    this.#editContactExistingTags = this.#document.querySelector("#editContactExistingTags");
+    this.#editContactExistingTags = this.#document.querySelector(
+      "#editContactExistingTags"
+    );
 
     // Set up all Handlebars templates
     const contactPartial = this.#document.querySelector("#contactPartial");
@@ -47,51 +53,76 @@ export class View {
     tagPartial.remove(); // Not necessary, but keeps the DOM cleaner.
 
     const contactListTemplate = this.#document.querySelector(
-      "#contactListTemplate",
+      "#contactListTemplate"
     );
     this.#contactListTemplate = Handlebars.compile(
-      contactListTemplate.innerHTML,
+      contactListTemplate.innerHTML
     );
     contactListTemplate.remove();
 
     const tagSelectorTemplate = this.#document.querySelector(
-      "#tagSelectorTemplate",
+      "#tagSelectorTemplate"
     );
     this.#tagSelectorTemplate = Handlebars.compile(
-      tagSelectorTemplate.innerHTML,
+      tagSelectorTemplate.innerHTML
     );
     tagSelectorTemplate.remove();
 
     // Add event listeners for controls that don't interact with model
-    this.#document.querySelector("#addContactButton").addEventListener(
-      "click",
-      (event) => {
+    this.#document
+      .querySelector("#addContactButton")
+      .addEventListener("click", (event) => {
         event.preventDefault();
         this.#addContactDialog.showModal();
-      },
-    );
+      });
 
-    this.#addContactDialog.querySelector("input[value='Cancel']")
+    this.#addContactDialog
+      .querySelector("input[value='Cancel']")
       .addEventListener("click", (event) => {
         event.preventDefault();
         this.clearAndCloseAddContactDialog();
       });
+
+    this.#editContactDialog
+      .querySelector("input[value='Cancel']")
+      .addEventListener("click", (event) => {
+        event.preventDefault();
+        this.#editContactDialog.close();
+      });
   }
 
   clearAndCloseAddContactDialog() {
-        this.#addContactForm.reset();
-        this.#addContactExistingTags.dataset.tags = "";
-        Array.from(this.#addContactExistingTags.querySelectorAll(".tag"))
-          .forEach((span) => span.classList.remove("selected"));
-        this.#addContactDialog.close();
+    this.#addContactForm.reset();
+    this.#addContactExistingTags.dataset.tags = "";
+    Array.from(this.#addContactExistingTags.querySelectorAll(".tag")).forEach(
+      (span) => span.classList.remove("selected")
+    );
+    this.#addContactDialog.close();
   }
 
   /**
-   * 
-   * @param {Contact} contact 
+   *
+   * @param {Contact} contact
    */
   showEditContactDialog(contact) {
-
+    const editContactForm = this.#editContactForm;
+    editContactForm.elements.full_name.value = contact.full_name;
+    editContactForm.elements.phone_number.value = contact.phone_number;
+    editContactForm.elements.email.value = contact.email;
+    this.#editContactExistingTags.dataset.tags = contact.tags
+      .map(({ tag }) => tag)
+      .join(",");
+    const tagElements = Array.from(
+      this.#editContactExistingTags.getElementsByClassName("tag")
+    );
+    tagElements.forEach(span => span.classList.remove("selected"));
+    tagElements
+      .filter((span) =>
+        contact.tags.map(({ tag }) => tag).includes(span.dataset.tag)
+      )
+      .forEach((span) => {
+        span.classList.add("selected");
+      });
     this.#editContactDialog.showModal();
   }
 

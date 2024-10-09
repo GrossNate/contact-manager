@@ -94,7 +94,7 @@ export class Model {
         method: "GET",
       });
       if (response.status === 200) {
-        let contact = response.json();
+        let contact = await response.json();
         Model.processContact(contact);
         return contact;
       } else if (response.status === 400) {
