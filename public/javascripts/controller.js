@@ -63,6 +63,7 @@ export class Controller {
   }
 
   async #refreshSearch() {
+    const searchInputText = this.#view.getSearchInputText().value;
     const searchTagsDataset = this.#view.getSearchTagSelector().dataset;
     const excludedTags = Controller.getValuesFromDatasetSlot(
       searchTagsDataset,
@@ -81,7 +82,9 @@ export class Controller {
         contact.tags.map(({ tag }) => tag).includes(selectedTag)
       )
     );
-    console.log(contactData);
+    contactData = contactData.filter((contact) =>
+      contact.full_name.toLowerCase().includes(searchInputText.toLowerCase())
+    );
     this.#view.renderContactList(contactData);
   }
 
@@ -98,6 +101,10 @@ export class Controller {
         }
       },
     );
+    this.#view.getSearchInputText().addEventListener("input", (event) => {
+      event.preventDefault();
+      this.#refreshSearch();
+    });
     this.#view.getSearchTagSelector().addEventListener(
       "dblclick",
       (event) => {

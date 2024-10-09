@@ -11,6 +11,7 @@ export class View {
   #contactList;
   #addContactDialog;
   #searchTagSelector;
+  #searchInputText;
   #addContactExistingTags;
   #addContactForm;
   
@@ -24,6 +25,7 @@ export class View {
     this.#searchTagSelector = this.#document.querySelector(
       "#searchTagSelector",
     );
+    this.#searchInputText = this.#document.querySelector("#searchInputText");
     this.#addContactExistingTags = this.#document.querySelector(
       "#addContactExistingTags",
     );
@@ -89,6 +91,9 @@ export class View {
   }
   getSearchTagSelector() {
     return this.#searchTagSelector;
+  }
+  getSearchInputText() {
+    return this.#searchInputText;
   }
   // Should delete this after converting to Model.prototype.getAvailableTags()
   #extractTagsFromContacts(contacts) {
