@@ -93,9 +93,6 @@
       </script>
     </dialog>
   </main>
-  <footer>
-    Because I'm excited about semantic HTML5 elements, here's a footer!
-  </footer>
   <script id="contactListTemplate" type="text/x-handlebars">
         {{#if contacts}}
         {{#each contacts}}
@@ -127,18 +124,6 @@
           <input type="button" class="editButton" data-id="{{id}}" value="✏︎ Edit">
           <input type="button" class="deleteButton" data-id="{{id}}" value="🗑️ Delete">
         </li>
-  </script>
-  <script id="tagPartial" type="text/x-handlebars">
-      <span
-        {{#if selected}}
-        class="tag selected"
-        {{else}}
-        class="tag"
-        {{/if}}
-        data-tag="{{tag}}"
-      >
-        {{tag}}
-      </span>
   </script>
   <script id="displayTagPartial" type="text/x-handlebars">
       <span

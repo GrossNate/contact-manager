@@ -35,14 +35,6 @@ export class Controller {
       this.#model.getAvailableTags(),
       this.#view.getSearchTagSelector()
     );
-    // this.#view.renderExistingTagsSelector(
-    //   this.#model.getAvailableTags(),
-    //   this.#view.getAddContactExistingTags()
-    // );
-    // this.#view.renderExistingTagsSelector(
-    //   this.#model.getAvailableTags(),
-    //   this.#view.getEditContactExistingTags()
-    // );
   }
 
   /**
@@ -106,10 +98,6 @@ export class Controller {
   }
 
   #setupEventHandlers() {
-    // this.#view
-    //   .getAddContactForm()
-    //   .addEventListener("submit", this.#handleAddContactSubmit.bind(this));
-    // this.#view.getEditContactForm().addEventListener("submit", console.log);
     this.#view.getSearchInputText().addEventListener("input", (event) => {
       event.preventDefault();
       this.#refreshSearch();
