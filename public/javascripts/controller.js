@@ -17,12 +17,15 @@ export class Controller {
   }
 
   async init() {
-    await this.refreshView();
+    document.addEventListener("contactsRefreshed", () => {this.refreshView()});
+    await this.#model.refreshContacts();
     this.#setupEventHandlers();
+    this.#view.setAddContactHandler(this.#model.addContact);
   }
 
   async refreshView() {
-    let contactData = await this.#model.refreshContacts();
+    // let contactData = await this.#model.refreshContacts();
+    let contactData = await this.#model.getContacts();
     this.#view.renderContactList(contactData);
     this.#view.renderExistingTagsSelector(this.#model.getAvailableTags(), this.#view.getSearchTagSelector());
     this.#view.renderExistingTagsSelector(this.#model.getAvailableTags(), this.#view.getAddContactExistingTags());

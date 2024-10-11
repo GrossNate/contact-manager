@@ -1,14 +1,26 @@
 import { Contact} from "./contact.js";
 
 export class Model {
+  #document; // Only using this to dispatch events.
   #contacts;
+  #contactsProxy;
 
   /**
    * @typedef {Contact[]} Contacts
    */
 
-  constructor() {
+  /**
+   * 
+   * @param {Document} document 
+   */
+  constructor(document) {
     this.#contacts = [];
+    this.#document = document;
+  }
+
+  #setContacts(contacts) {
+    this.#contacts = contacts;
+    this.#document.dispatchEvent(new Event("contactsRefreshed"));
   }
 
   /**
@@ -19,7 +31,7 @@ export class Model {
     try {
       const response = await fetch("/api/contacts");
       let contacts = await response.json();
-      this.#contacts = contacts.map(contact => new Contact(contact));
+      this.#setContacts(contacts.map(contact => new Contact(contact)));
       return this.#contacts; // this.#contacts;
     } catch (error) {
       console.error(`Failed to fetch contacts: ${error}`);
@@ -43,7 +55,9 @@ export class Model {
    * @param {FormData} formData
    * @returns {boolean}
    */
-  async addContact(formData) {
+   // Note this is expressed as an arrow function because otherwise we lose the
+   // right context.
+  addContact = async (formData) => {
     let formDataObj = {};
     formData
       .entries()
@@ -55,6 +69,8 @@ export class Model {
         body: JSON.stringify(formDataObj),
       });
       if (response.status === 201) {
+        console.log(this);
+        this.refreshContacts();
         return true;
       } else if (response.status === 400) {
         return false;
@@ -98,6 +114,7 @@ export class Model {
         method: "DELETE",
       });
       if (response.status === 204) {
+        this.refreshContacts();
         return true;
       } else if (response.status === 400) {
         return false;
@@ -115,10 +132,7 @@ export class Model {
    * @returns {Object[]}
    */
   getAvailableTags(contacts = this.#contacts) {
-    // return contacts
-      // .flatMap((contact) => contact.tags)
-      // .map((tagObj) => tagObj?.tag)
-      return contacts.flatMap(contact => contact.getTagsArr())
+      return contacts.flatMap(contact => contact.tags)
       .sort()
       .reduce((uniqueTags, tag) => {
         if (tag && !uniqueTags.includes(tag)) {

@@ -68,5 +68,12 @@
     "email": null,
     "tags": "family,uncle",
     "id": 16
+  },
+  {
+    "full_name": "Foo",
+    "phone_number": null,
+    "email": null,
+    "tags": "foo",
+    "id": 17
   }
 ]

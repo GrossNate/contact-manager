@@ -1,7 +1,10 @@
+import { ContactFormWidget } from "./contactFormWidget.js";
+
 /** @module View */
 
 export class View {
   #document;
+  #addContactHandler;
 
   // Handlebars templates
   #contactListTemplate;
@@ -21,12 +24,15 @@ export class View {
    * */
   #editContactForm;
   #editContactExistingTags;
+  #contactFormWidget;
 
   /**
    * @param {Document} document
    */
   constructor(document) {
     this.#document = document;
+
+    // Extract all relevant elements from the DOM
     this.#contactList = this.#document.querySelector("#contactList");
     this.#addContactDialog = this.#document.querySelector("#addContactDialog");
     this.#searchTagSelector =
@@ -43,14 +49,24 @@ export class View {
       "#editContactExistingTags"
     );
 
+    this.#contactFormWidget = new ContactFormWidget(
+      this.#document.getElementById("contactForm"),
+      this.#document.getElementById("contactFormDialog")
+    );
+
     // Set up all Handlebars templates
     const contactPartial = this.#document.querySelector("#contactPartial");
     Handlebars.registerPartial("contactPartial", contactPartial.innerHTML);
-    contactPartial.remove(); // Not necessary, but keeps the DOM cleaner.
 
     const tagPartial = this.#document.querySelector("#tagPartial");
     Handlebars.registerPartial("tagPartial", tagPartial.innerHTML);
-    tagPartial.remove(); // Not necessary, but keeps the DOM cleaner.
+
+    const displayTagPartial =
+      this.#document.querySelector("#displayTagPartial");
+    Handlebars.registerPartial(
+      "displayTagPartial",
+      displayTagPartial.innerHTML
+    );
 
     const contactListTemplate = this.#document.querySelector(
       "#contactListTemplate"
@@ -66,14 +82,17 @@ export class View {
     this.#tagSelectorTemplate = Handlebars.compile(
       tagSelectorTemplate.innerHTML
     );
-    tagSelectorTemplate.remove();
 
     // Add event listeners for controls that don't interact with model
     this.#document
       .querySelector("#addContactButton")
       .addEventListener("click", (event) => {
         event.preventDefault();
-        this.#addContactDialog.showModal();
+        this.#contactFormWidget.initAddContactForm(
+          ["foo", "bar"],
+          this.#addContactHandler
+        );
+        this.#contactFormWidget.show();
       });
 
     this.#addContactDialog
@@ -89,24 +108,22 @@ export class View {
         event.preventDefault();
         this.#editContactDialog.close();
       });
-    
+
     this.#editContactExistingTags.addEventListener("click", (event) => {
       if (event.target.classList.contains("tag")) {
         const tagClicked = event.target.dataset.tag;
         const tagDataset = this.#editContactExistingTags.dataset;
-        if (
-          tagDataset.tags
+        if (tagDataset.tags.split(",").includes(tagClicked)) {
+          tagDataset.tags = tagDataset.tags
             .split(",")
-            .includes(tagClicked)
-        ) {
-          tagDataset.tags = tagDataset.tags.split(",").filter((tag) =>
-            tag != tagClicked
-          ).join(",");
+            .filter((tag) => tag != tagClicked)
+            .join(",");
           event.target.classList.remove("selected");
         } else {
-          tagDataset.tags = tagDataset.tags.split(",").concat(tagClicked).join(
-            ",",
-          );
+          tagDataset.tags = tagDataset.tags
+            .split(",")
+            .concat(tagClicked)
+            .join(",");
           event.target.classList.add("selected");
         }
       }
@@ -115,23 +132,36 @@ export class View {
       if (event.target.classList.contains("tag")) {
         const tagClicked = event.target.dataset.tag;
         const tagDataset = this.#addContactExistingTags.dataset;
-        if (
-          tagDataset.tags
+        if (tagDataset.tags.split(",").includes(tagClicked)) {
+          tagDataset.tags = tagDataset.tags
             .split(",")
-            .includes(tagClicked)
-        ) {
-          tagDataset.tags = tagDataset.tags.split(",").filter((tag) =>
-            tag != tagClicked
-          ).join(",");
+            .filter((tag) => tag != tagClicked)
+            .join(",");
           event.target.classList.remove("selected");
         } else {
-          tagDataset.tags = tagDataset.tags.split(",").concat(tagClicked).join(
-            ",",
-          );
+          tagDataset.tags = tagDataset.tags
+            .split(",")
+            .concat(tagClicked)
+            .join(",");
           event.target.classList.add("selected");
         }
       }
     });
+  }
+
+  setAddContactHandler(callback) {
+    this.#addContactHandler = callback;
+  }
+  /**
+   *
+   * @param {string[]} existingContacts
+   */
+  showAddContactDialog(existingContacts = []) {
+    this.#contactFormWidget.initAddContactForm(
+      existingContacts,
+      this.#addContactHandler
+    );
+    this.#contactFormWidget.show();
   }
 
   clearAndCloseAddContactDialog() {
@@ -159,7 +189,7 @@ export class View {
     const tagElements = Array.from(
       this.#editContactExistingTags.getElementsByClassName("tag")
     );
-    tagElements.forEach(span => span.classList.remove("selected"));
+    tagElements.forEach((span) => span.classList.remove("selected"));
     tagElements
       .filter((span) =>
         contact.tags.map(({ tag }) => tag).includes(span.dataset.tag)

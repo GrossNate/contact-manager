@@ -16,26 +16,15 @@ export class Contact {
     this.tags = (contactBareObj.tags
       ?.split(",")
       .sort()
-      .filter(tagStr => tagStr != '')
-      .map((tag) => ({
-        tag: tag,
-      })) || []);
+      .filter(tagStr => tagStr != '') || []);
   }
   
-  /**
-   * Gets the tags as an array of strings.
-   * @returns {string[]}
-   */
-  getTagsArr() {
-    return this.tags.map(tagObj => tagObj.tag);
-  }
-
   /**
    * Gets the tags as a tab-delimited string. 
    * @returns {string}
    */
   getTagsStr() {
-    return this.getTagsArr().join(",");
+    return this.tags.join(",");
   }
   
 }
