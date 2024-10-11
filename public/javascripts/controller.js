@@ -17,7 +17,9 @@ export class Controller {
   }
 
   async init() {
-    document.addEventListener("contactsRefreshed", () => {this.refreshView()});
+    document.addEventListener("contactsRefreshed", () => {
+      this.refreshView();
+    });
     await this.#model.refreshContacts();
     this.#setupEventHandlers();
     this.#view.setAddContactHandler(this.#model.addOrUpdateContact);
@@ -27,12 +29,20 @@ export class Controller {
   }
 
   async refreshView() {
-    // let contactData = await this.#model.refreshContacts();
     let contactData = await this.#model.getContacts();
     this.#view.renderContactList(contactData);
-    this.#view.renderExistingTagsSelector(this.#model.getAvailableTags(), this.#view.getSearchTagSelector());
-    this.#view.renderExistingTagsSelector(this.#model.getAvailableTags(), this.#view.getAddContactExistingTags());
-    this.#view.renderExistingTagsSelector(this.#model.getAvailableTags(), this.#view.getEditContactExistingTags());
+    this.#view.renderExistingTagsSelector(
+      this.#model.getAvailableTags(),
+      this.#view.getSearchTagSelector()
+    );
+    // this.#view.renderExistingTagsSelector(
+    //   this.#model.getAvailableTags(),
+    //   this.#view.getAddContactExistingTags()
+    // );
+    // this.#view.renderExistingTagsSelector(
+    //   this.#model.getAvailableTags(),
+    //   this.#view.getEditContactExistingTags()
+    // );
   }
 
   /**
@@ -74,19 +84,19 @@ export class Controller {
     const searchTagsDataset = this.#view.getSearchTagSelector().dataset;
     const excludedTags = Controller.getValuesFromDatasetSlot(
       searchTagsDataset,
-      "excludedTags",
+      "excludedTags"
     );
     const selectedTags = Controller.getValuesFromDatasetSlot(
       searchTagsDataset,
-      "selectedTags",
+      "selectedTags"
     );
     let contactData = await this.#model.getContacts();
     contactData = contactData.filter((contact) =>
-      (contact.tags || []).every(( tag ) => !excludedTags.includes(tag))
+      (contact.tags || []).every((tag) => !excludedTags.includes(tag))
     );
     contactData = contactData.filter((contact) =>
       selectedTags.every((selectedTag) =>
-        (contact.tags || []).map(( tag ) => tag).includes(selectedTag)
+        (contact.tags || []).map((tag) => tag).includes(selectedTag)
       )
     );
     contactData = contactData.filter((contact) =>
@@ -96,87 +106,66 @@ export class Controller {
   }
 
   #setupEventHandlers() {
-    this.#view.getAddContactForm().addEventListener(
-      "submit",
-      this.#handleAddContactSubmit.bind(this),
-    );
-    this.#view.getEditContactForm().addEventListener(
-      "submit",
-      // this.#handleEditContactSubmit.bind(this),
-      console.log
-    );
-    // this.#view.getContactList().addEventListener(
-    //   "click",
-    //   (event) => {
-    //     if (event.target.classList.contains("deleteButton")) {
-    //       this.#handleDeleteContact.bind(this)(event);
-    //     } else if (event.target.classList.contains("editButton")) {
-    //       this.#handleEditContact.bind(this)(event);
-    //     }
-    //   },
-    // );
+    // this.#view
+    //   .getAddContactForm()
+    //   .addEventListener("submit", this.#handleAddContactSubmit.bind(this));
+    // this.#view.getEditContactForm().addEventListener("submit", console.log);
     this.#view.getSearchInputText().addEventListener("input", (event) => {
       event.preventDefault();
       this.#refreshSearch();
     });
-    this.#view.getSearchTagSelector().addEventListener(
-      "dblclick",
-      (event) => {
-        const classList = event.target.classList;
-        if (classList.contains("tag")) {
-          event.preventDefault();
-          const dataset = this.#view.getSearchTagSelector().dataset;
-          if (classList.contains("selected")) {
-            classList.remove("selected");
-            Controller.removeValueFromDatasetSlot(
-              dataset,
-              "selectedTags",
-              event.target.dataset.tag,
-            );
-          }
-          classList.add("excluded");
-          Controller.addValueToDatasetSlot(
+    this.#view.getSearchTagSelector().addEventListener("dblclick", (event) => {
+      const classList = event.target.classList;
+      if (classList.contains("tag")) {
+        event.preventDefault();
+        const dataset = this.#view.getSearchTagSelector().dataset;
+        if (classList.contains("selected")) {
+          classList.remove("selected");
+          Controller.removeValueFromDatasetSlot(
+            dataset,
+            "selectedTags",
+            event.target.dataset.tag
+          );
+        }
+        classList.add("excluded");
+        Controller.addValueToDatasetSlot(
+          dataset,
+          "excludedTags",
+          event.target.dataset.tag
+        );
+        this.#refreshSearch();
+      }
+    });
+    this.#view.getSearchTagSelector().addEventListener("click", (event) => {
+      const classList = event.target.classList;
+      if (classList.contains("tag")) {
+        event.preventDefault();
+        const dataset = this.#view.getSearchTagSelector().dataset;
+        if (classList.contains("excluded")) {
+          classList.remove("excluded");
+          Controller.removeValueFromDatasetSlot(
             dataset,
             "excludedTags",
-            event.target.dataset.tag,
+            event.target.dataset.tag
           );
-          this.#refreshSearch();
+        } else if (classList.contains("selected")) {
+          classList.remove("selected");
+          Controller.removeValueFromDatasetSlot(
+            dataset,
+            "selectedTags",
+            event.target.dataset.tag
+          );
+        } else {
+          classList.add("selected");
+          Controller.addValueToDatasetSlot(
+            dataset,
+            "selectedTags",
+            event.target.dataset.tag
+          );
         }
-      },
-    );
-    this.#view.getSearchTagSelector().addEventListener(
-      "click",
-      (event) => {
-        const classList = event.target.classList;
-        if (classList.contains("tag")) {
-          event.preventDefault();
-          const dataset = this.#view.getSearchTagSelector().dataset;
-          if (classList.contains("excluded")) {
-            classList.remove("excluded");
-            Controller.removeValueFromDatasetSlot(
-              dataset,
-              "excludedTags",
-              event.target.dataset.tag,
-            );
-          } else if (classList.contains("selected")) {
-            classList.remove("selected");
-            Controller.removeValueFromDatasetSlot(
-              dataset,
-              "selectedTags",
-              event.target.dataset.tag,
-            );
-          } else {
-            classList.add("selected");
-            Controller.addValueToDatasetSlot(
-              dataset,
-              "selectedTags",
-              event.target.dataset.tag,
-            );
-          }
-          this.#refreshSearch();
-        }
-      },
-    );
+        this.#refreshSearch();
+      }
+    });
   }
 
   // Event Handlers
@@ -184,11 +173,15 @@ export class Controller {
     event.preventDefault();
     const formData = new FormData(this.#view.getAddContactForm());
     const newTagsArr = formData.get("addContactNewTagsInput").split(" ");
-    const existingTagsArr = this.#view.getAddContactExistingTags().dataset.tags
-      .split(",");
+    const existingTagsArr = this.#view
+      .getAddContactExistingTags()
+      .dataset.tags.split(",");
     formData.set(
       "tags",
-      newTagsArr.concat(existingTagsArr).filter((tag) => tag != "").join(","),
+      newTagsArr
+        .concat(existingTagsArr)
+        .filter((tag) => tag != "")
+        .join(",")
     );
     formData.delete("addContactNewTagsInput");
 
@@ -200,26 +193,4 @@ export class Controller {
       alert("Failure!");
     }
   }
-
-  // async #handleDeleteContact(event) {
-  //   event.preventDefault();
-  //   let contactDeleted = await this.#model.deleteContact(
-  //     event.target.dataset.id,
-  //   );
-  //   if (contactDeleted) {
-  //     this.refreshView();
-  //   } else {
-  //     alert("Deletion failed!");
-  //   }
-  // }
-  
-  // async #handleEditContact(event) {
-  //   event.preventDefault();
-  //   let contact = await this.#model.getContact(event.target.dataset.id);
-  //   if (contact) {
-  //     this.#view.showEditContactDialog(contact);
-  //   } else {
-  //     alert("Couldn't find contact to edit.");
-  //   }
-  // }
 }

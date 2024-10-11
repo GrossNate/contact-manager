@@ -29,7 +29,6 @@ export class ContactFormWidget {
     );
 
     // Register Handlebars template.
-    console.log(this.#form);
     const tagSelectorTemplate = this.#dialog.querySelector(
       "#tagSelectorTemplate"
     );
@@ -45,18 +44,8 @@ export class ContactFormWidget {
           const tagClicked = event.target.dataset.tag;
           const tagsInput = this.#form.elements.tags;
           if (tagsInput.value.split(",").includes(tagClicked)) {
-            // tagsInput.value = tagsInput.value
-            //   .split(",")
-            //   .filter((tag) => tag != tagClicked)
-            //   .join(",");
-            // event.target.classList.remove("selected");
             this.#deselectTag(tagClicked);
           } else {
-            // tagsInput.value = tagsInput.value
-            //   .split(",")
-            //   .concat(tagClicked)
-            //   .join(",");
-            // event.target.classList.add("selected");
             this.#selectTag(tagClicked);
           }
         }
@@ -80,6 +69,8 @@ export class ContactFormWidget {
       const formData = new FormData(this.#form);
       const result = await this.#handleDataCallback(formData);
       if (result) {
+        this.#form.reset();
+        this.#form.elements.id.value = '';
         this.hide();
       } else {
         alert("Failure!");
@@ -90,10 +81,7 @@ export class ContactFormWidget {
   #selectTag(tagClicked) {
     const tagsInput = this.#form.elements.tags;
     if (!tagsInput.value.split(",").includes(tagClicked)) {
-      tagsInput.value = tagsInput.value
-        .split(",")
-        .concat(tagClicked)
-        .join(",");
+      tagsInput.value = tagsInput.value.split(",").concat(tagClicked).join(",");
       this.#contactExistingTagsSelectionSpan
         .querySelector(`span[data-tag='${tagClicked}']`)
         .classList.add("selected");
@@ -148,22 +136,13 @@ export class ContactFormWidget {
       this.#form.elements.phone_number.value = contact.phone_number;
       this.#form.elements.email.value = contact.email;
       this.#form.elements.id.value = contact.id;
-      // this.#editContactExistingTags.dataset.tags = contact.tags
-      //   .map(({ tag }) => tag)
-      //   .join(",");
       Array.from(
         this.#contactExistingTagsSelectionSpan.getElementsByClassName("tag")
-      ).map(span => span.dataset.tag).forEach(tag => this.#deselectTag(tag));
+      )
+        .map((span) => span.dataset.tag)
+        .forEach((tag) => this.#deselectTag(tag));
       this.#form.elements.tags.value = "";
-      contact.tags.forEach(tag => this.#selectTag(tag));
-      // tagElements.forEach((span) => span.classList.remove("selected"));
-      // tagElements
-      //   .filter((span) =>
-      //     contact.tags.map(({ tag }) => tag).includes(span.dataset.tag)
-      //   )
-      //   .forEach((span) => {
-      //     span.classList.add("selected");
-      //   });
+      contact.tags.forEach((tag) => this.#selectTag(tag));
     }
   }
 
