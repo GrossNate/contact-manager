@@ -75,7 +75,7 @@ export class View {
         this.#contactFormWidget.show();
       });
       
-    this.getContactList().addEventListener(
+    this.#contactList.addEventListener(
       "click",
       async (event) => {
         if (event.target.classList.contains("deleteButton")) {
@@ -115,9 +115,6 @@ export class View {
   }
 
 
-  getContactList() {
-    return this.#contactList;
-  }
   getSearchTagSelector() {
     return this.#searchTagSelector;
   }

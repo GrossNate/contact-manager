@@ -3,7 +3,6 @@ import { Contact } from "./contact.js";
 export class Model {
   #document; // Only using this to dispatch events.
   #contacts;
-  #contactsProxy;
 
   /**
    * @typedef {Contact[]} Contacts
@@ -65,6 +64,7 @@ export class Model {
     try {
       let endpointLocation;
       let method;
+      // If the id property is populated then it's an update, otherwise it's new.
       if (formDataObj.id) {
         endpointLocation = `/api/contacts/${formDataObj.id}`;
         method = "PUT";
