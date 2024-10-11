@@ -45,17 +45,19 @@ export class ContactFormWidget {
           const tagClicked = event.target.dataset.tag;
           const tagsInput = this.#form.elements.tags;
           if (tagsInput.value.split(",").includes(tagClicked)) {
-            tagsInput.value = tagsInput.value
-              .split(",")
-              .filter((tag) => tag != tagClicked)
-              .join(",");
-            event.target.classList.remove("selected");
+            // tagsInput.value = tagsInput.value
+            //   .split(",")
+            //   .filter((tag) => tag != tagClicked)
+            //   .join(",");
+            // event.target.classList.remove("selected");
+            this.#deselectTag(tagClicked);
           } else {
-            tagsInput.value = tagsInput.value
-              .split(",")
-              .concat(tagClicked)
-              .join(",");
-            event.target.classList.add("selected");
+            // tagsInput.value = tagsInput.value
+            //   .split(",")
+            //   .concat(tagClicked)
+            //   .join(",");
+            // event.target.classList.add("selected");
+            this.#selectTag(tagClicked);
           }
         }
       }
@@ -75,7 +77,6 @@ export class ContactFormWidget {
         .concat(this.#form.elements.contactNewTagsInput.value.split(" "))
         .filter((tag) => tag != "")
         .reduce(ContactFormWidget.#uniqueStringArrReducer, []);
-      // console.log(this.#form.elements);
       const formData = new FormData(this.#form);
       const result = await this.#handleDataCallback(formData);
       if (result) {
@@ -85,6 +86,33 @@ export class ContactFormWidget {
       }
     });
   }
+
+  #selectTag(tagClicked) {
+    const tagsInput = this.#form.elements.tags;
+    if (!tagsInput.value.split(",").includes(tagClicked)) {
+      tagsInput.value = tagsInput.value
+        .split(",")
+        .concat(tagClicked)
+        .join(",");
+      this.#contactExistingTagsSelectionSpan
+        .querySelector(`span[data-tag='${tagClicked}']`)
+        .classList.add("selected");
+    }
+  }
+
+  #deselectTag(tagClicked) {
+    const tagsInput = this.#form.elements.tags;
+    if (tagsInput.value.split(",").includes(tagClicked)) {
+      tagsInput.value = tagsInput.value
+        .split(",")
+        .filter((tag) => tag != tagClicked)
+        .join(",");
+      this.#contactExistingTagsSelectionSpan
+        .querySelector(`span[data-tag='${tagClicked}']`)
+        .classList.remove("selected");
+    }
+  }
+
   show() {
     this.#dialog.showModal();
   }
@@ -106,14 +134,37 @@ export class ContactFormWidget {
   /**
    *
    * @param {string[]} existingTags
-   * @param {Function} addContactDataHandler Callback to add data to model.
+   * @param {Function} addContactDataHandler - Callback to add data to model.
+   * @param {Contact} [contact] - Contact to update. If undefined will add new.
    */
-  initAddContactForm(existingTags, addContactDataHandler) {
+  initContactForm(existingTags, addContactDataHandler, contact) {
     this.#renderExistingTagsSelector(
       existingTags,
       this.#form.querySelector("#contactExistingTagsSelectionSpan")
     );
     this.#handleDataCallback = addContactDataHandler;
+    if (contact) {
+      this.#form.elements.full_name.value = contact.full_name;
+      this.#form.elements.phone_number.value = contact.phone_number;
+      this.#form.elements.email.value = contact.email;
+      this.#form.elements.id.value = contact.id;
+      // this.#editContactExistingTags.dataset.tags = contact.tags
+      //   .map(({ tag }) => tag)
+      //   .join(",");
+      Array.from(
+        this.#contactExistingTagsSelectionSpan.getElementsByClassName("tag")
+      ).map(span => span.dataset.tag).forEach(tag => this.#deselectTag(tag));
+      this.#form.elements.tags.value = "";
+      contact.tags.forEach(tag => this.#selectTag(tag));
+      // tagElements.forEach((span) => span.classList.remove("selected"));
+      // tagElements
+      //   .filter((span) =>
+      //     contact.tags.map(({ tag }) => tag).includes(span.dataset.tag)
+      //   )
+      //   .forEach((span) => {
+      //     span.classList.add("selected");
+      //   });
+    }
   }
 
   /**

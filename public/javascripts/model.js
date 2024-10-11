@@ -57,19 +57,27 @@ export class Model {
    */
    // Note this is expressed as an arrow function because otherwise we lose the
    // right context.
-  addContact = async (formData) => {
+  addOrUpdateContact = async (formData) => {
     let formDataObj = {};
     formData
       .entries()
       .forEach((entry) => (formDataObj[entry[0]] = entry[1] ? entry[1] : null));
     try {
-      const response = await fetch("/api/contacts", {
-        method: "POST",
+      let endpointLocation;
+      let method;
+      if (formDataObj.id) {
+        endpointLocation = `/api/contacts/${formDataObj.id}`;
+        method = "PUT";
+      } else {
+        endpointLocation = "/api/contacts";
+        method = "POST";
+      }
+      const response = await fetch(endpointLocation, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formDataObj),
       });
       if (response.status === 201) {
-        console.log(this);
         this.refreshContacts();
         return true;
       } else if (response.status === 400) {
@@ -81,13 +89,37 @@ export class Model {
       console.error(`Failed to create contact: ${error}`);
     }
   }
+  
+  /**
+   * 
+   * @param {Contact} contact 
+   */
+  editContact = async (contact) => {
+    try {
+      const response = await fetch(`/api/contacts/${contact.id}`, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(contact)
+      });
+      if (response.status === 201) {
+        this.refreshContacts();
+        return true;
+      } else if (response.status === 400) {
+        return false;
+      } else {
+        throw new Error("Contact creation failed for some unexpected reason.");
+      }
+    } catch (error) {
+      console.error(`Failed to edit contact: ${error}`);
+    }
+  }
 
   /**
    *
    * @param {number} contactId
    * @returns {Contact}
    */
-  async getContact(contactId) {
+  getContact = async (contactId) => {
     try {
       const response = await fetch(`/api/contacts/${contactId}`, {
         method: "GET",
@@ -108,7 +140,7 @@ export class Model {
    * @param {integer} contactId
    * @returns {boolean}
    */
-  async deleteContact(contactId) {
+  deleteContact = async (contactId) => {
     try {
       const response = await fetch(`/api/contacts/${contactId}`, {
         method: "DELETE",
@@ -131,7 +163,7 @@ export class Model {
    * @param {Contacts} contacts 
    * @returns {Object[]}
    */
-  getAvailableTags(contacts = this.#contacts) {
+  getAvailableTags = (contacts = this.#contacts) => {
       return contacts.flatMap(contact => contact.tags)
       .sort()
       .reduce((uniqueTags, tag) => {

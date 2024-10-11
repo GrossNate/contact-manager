@@ -42,17 +42,10 @@
     "id": 10
   },
   {
-    "full_name": "Foo",
-    "phone_number": null,
-    "email": "foo.the.fake.person.long.email@gmail.com",
-    "tags": null,
-    "id": 13
-  },
-  {
     "full_name": "Laren",
-    "phone_number": null,
+    "phone_number": "123",
     "email": null,
-    "tags": "school,friend",
+    "tags": "friend,school",
     "id": 14
   },
   {
@@ -70,10 +63,10 @@
     "id": 16
   },
   {
-    "full_name": "Foo",
+    "full_name": "Katie",
     "phone_number": null,
     "email": null,
-    "tags": "foo",
+    "tags": "family,mother",
     "id": 17
   }
 ]

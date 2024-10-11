@@ -172,7 +172,11 @@
       </form>
       <script id="tagSelectorTemplate" type="text/x-handlebars">
         {{#each tags}}
+          {{#if tag}}
+          <span class="tag" data-tag="{{tag}}">{{tag}}</span>
+          {{else}}
           <span class="tag" data-tag="{{this}}">{{this}}</span>
+          {{/if}}
         {{/each}}
       </script>
     </dialog>

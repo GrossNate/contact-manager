@@ -20,7 +20,10 @@ export class Controller {
     document.addEventListener("contactsRefreshed", () => {this.refreshView()});
     await this.#model.refreshContacts();
     this.#setupEventHandlers();
-    this.#view.setAddContactHandler(this.#model.addContact);
+    this.#view.setAddContactHandler(this.#model.addOrUpdateContact);
+    this.#view.setGetAvailableTagsFunction(this.#model.getAvailableTags);
+    this.#view.setHandleDeleteCallback(this.#model.deleteContact);
+    this.#view.setGetContactCallback(this.#model.getContact);
   }
 
   async refreshView() {
@@ -78,13 +81,12 @@ export class Controller {
       "selectedTags",
     );
     let contactData = await this.#model.getContacts();
-    console.log(contactData);
     contactData = contactData.filter((contact) =>
-      (contact.tags || []).every(({ tag }) => !excludedTags.includes(tag))
+      (contact.tags || []).every(( tag ) => !excludedTags.includes(tag))
     );
     contactData = contactData.filter((contact) =>
       selectedTags.every((selectedTag) =>
-        (contact.tags || []).map(({ tag }) => tag).includes(selectedTag)
+        (contact.tags || []).map(( tag ) => tag).includes(selectedTag)
       )
     );
     contactData = contactData.filter((contact) =>
@@ -103,16 +105,16 @@ export class Controller {
       // this.#handleEditContactSubmit.bind(this),
       console.log
     );
-    this.#view.getContactList().addEventListener(
-      "click",
-      (event) => {
-        if (event.target.classList.contains("deleteButton")) {
-          this.#handleDeleteContact.bind(this)(event);
-        } else if (event.target.classList.contains("editButton")) {
-          this.#handleEditContact.bind(this)(event);
-        }
-      },
-    );
+    // this.#view.getContactList().addEventListener(
+    //   "click",
+    //   (event) => {
+    //     if (event.target.classList.contains("deleteButton")) {
+    //       this.#handleDeleteContact.bind(this)(event);
+    //     } else if (event.target.classList.contains("editButton")) {
+    //       this.#handleEditContact.bind(this)(event);
+    //     }
+    //   },
+    // );
     this.#view.getSearchInputText().addEventListener("input", (event) => {
       event.preventDefault();
       this.#refreshSearch();
@@ -190,7 +192,7 @@ export class Controller {
     );
     formData.delete("addContactNewTagsInput");
 
-    let result = await this.#model.addContact(formData);
+    let result = await this.#model.addOrUpdateContact(formData);
     if (result) {
       this.refreshView();
       this.#view.clearAndCloseAddContactDialog();
@@ -199,25 +201,25 @@ export class Controller {
     }
   }
 
-  async #handleDeleteContact(event) {
-    event.preventDefault();
-    let contactDeleted = await this.#model.deleteContact(
-      event.target.dataset.id,
-    );
-    if (contactDeleted) {
-      this.refreshView();
-    } else {
-      alert("Deletion failed!");
-    }
-  }
+  // async #handleDeleteContact(event) {
+  //   event.preventDefault();
+  //   let contactDeleted = await this.#model.deleteContact(
+  //     event.target.dataset.id,
+  //   );
+  //   if (contactDeleted) {
+  //     this.refreshView();
+  //   } else {
+  //     alert("Deletion failed!");
+  //   }
+  // }
   
-  async #handleEditContact(event) {
-    event.preventDefault();
-    let contact = await this.#model.getContact(event.target.dataset.id);
-    if (contact) {
-      this.#view.showEditContactDialog(contact);
-    } else {
-      alert("Couldn't find contact to edit.");
-    }
-  }
+  // async #handleEditContact(event) {
+  //   event.preventDefault();
+  //   let contact = await this.#model.getContact(event.target.dataset.id);
+  //   if (contact) {
+  //     this.#view.showEditContactDialog(contact);
+  //   } else {
+  //     alert("Couldn't find contact to edit.");
+  //   }
+  // }
 }
