@@ -66,11 +66,13 @@ export class View {
     this.#contactList.addEventListener("click", async (event) => {
       if (event.target.classList.contains("deleteButton")) {
         event.preventDefault();
-        let contactDeleted = await this.#handleDeleteCallback(
-          event.target.dataset.id
-        );
-        if (!contactDeleted) {
-          alert("Couldn't delete!");
+        if (window.confirm("Are you sure you want to delete this contact?")) {
+          let contactDeleted = await this.#handleDeleteCallback(
+            event.target.dataset.id
+          );
+          if (!contactDeleted) {
+            alert("Couldn't delete!");
+          }
         }
       } else if (event.target.classList.contains("editButton")) {
         event.preventDefault();

@@ -73,6 +73,43 @@ export class ContactFormWidget {
         alert("Failure!");
       }
     });
+    
+    // Register event handlers for pretty form validation
+    const name = this.#form.elements.full_name;
+    name.addEventListener("input", () => {
+      if (name.validity.patternMismatch) {
+        name.setCustomValidity("Name is the only required field. Otherwise, what's the point?");
+      } else {
+        name.setCustomValidity("");
+      }
+    });
+
+    const email = this.#form.elements.email;
+    email.addEventListener("input", () => {
+      if (email.validity.typeMismatch) {
+        email.setCustomValidity("Please enter a valid email address.");
+      } else {
+        email.setCustomValidity("");
+      }
+    });
+
+    const phone = this.#form.elements.phone_number;
+    phone.addEventListener("input", () => {
+      if (phone.validity.patternMismatch) {
+        phone.setCustomValidity("Please enter a valid phone number.");
+      } else {
+        phone.setCustomValidity("");
+      }
+    });
+    
+    const tags = this.#form.elements.contactNewTagsInput;
+    tags.addEventListener("input", () => {
+      if (tags.validity.patternMismatch) {
+        tags.setCustomValidity("Tags can't contain commas (,) otherwise you can go wild!");
+      } else {
+        tags.setCustomValidity("");
+      }
+    })
   }
 
   #selectTag(tagClicked) {

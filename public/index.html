@@ -46,7 +46,7 @@
               <label for="full_name">Name</label>
             </td>
             <td>
-              <input type="text" name="full_name" required />
+              <input type="text" name="full_name" required pattern=".*\S.*"/>
             </td>
           </tr>
           <tr>
@@ -54,7 +54,7 @@
               <label for="phone_number">Phone</label>
             </td>
             <td>
-              <input type="text" name="phone_number" pattern="[\d \+\-,\*\#]+" />
+              <input type="text" name="phone_number" pattern="[\d \+\-,\*\#\(\)\.]*\d[\d \+\-,\*\#\(\)\.]*" />
             </td>
           </tr>
           <tr>

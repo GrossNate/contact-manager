@@ -24,7 +24,9 @@ body {
 #contactForm .tag, #searchTagSelector .tag {
   cursor: pointer;
 }
-
+input:invalid {
+  outline-color: red;
+}
 .selected {
   background-color: lightgreen;
   text-decoration: underline;
