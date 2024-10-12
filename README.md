@@ -34,3 +34,8 @@
    spaces, so if you want to add the tag "fizz buzz" then you'll
    need to replace the space with an underscore or hyphen, otherwise you'll be
    adding two new tags. Also note that tags are automatically de-duplicated.
+
+### Fun stuff
+
+1. Double-clicking on a piece of data on one of the contact cards copies it to
+   the system clipboard.

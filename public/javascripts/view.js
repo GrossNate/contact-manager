@@ -82,6 +82,32 @@ export class View {
           await this.#getContactCallback(event.target.dataset.id)
         );
         this.#contactFormWidget.show();
+      } 
+    });
+
+    const showCopiedMessage = (element) => {
+      const messageDiv = this.#document.createElement("div");
+      messageDiv.style.position = 'absolute';
+      messageDiv.textContent = `"${element.textContent.trim()}" copied to clipboard`;
+      messageDiv.style.top = element.offsetTop + 5 + 'px';
+      messageDiv.style.left = element.offsetLeft + 5 + 'px';
+      messageDiv.style.border = '1px solid green';
+      messageDiv.style.padding = '3px';
+      messageDiv.style.backgroundColor = 'lightgreen';
+      messageDiv.style.transition = 'opacity .75s ';
+      this.#document.body.appendChild(messageDiv);
+      setTimeout(() => messageDiv.style.opacity = 0, 1250); 
+      setTimeout(() => messageDiv.remove(), 2000);
+    }
+
+    this.#contactList.addEventListener("dblclick", async event => {
+      if (event.target.tagName == "DD") {
+        try {
+          await navigator.clipboard.writeText(event.target.textContent.trim());
+          showCopiedMessage(event.target);
+        } catch (error) {
+          console.error(error.message);
+        }
       }
     });
   }
