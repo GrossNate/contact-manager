@@ -3,33 +3,26 @@
     "full_name": "Ben",
     "phone_number": null,
     "email": null,
-    "tags": "brother",
+    "tags": "family",
     "id": 2
   },
   {
     "full_name": "Chaz",
     "phone_number": null,
     "email": null,
-    "tags": "brother",
+    "tags": "family",
     "id": 3
   },
   {
-    "full_name": "Katie",
-    "phone_number": null,
-    "email": null,
-    "tags": "mother",
-    "id": 5
-  },
-  {
     "full_name": "Aram B.",
-    "phone_number": null,
-    "email": null,
-    "tags": "friend",
+    "phone_number": "+65 8123 4567",
+    "email": "aram@personalemail.com",
+    "tags": "friend,work",
     "id": 6
   },
   {
     "full_name": "Aaron S.",
-    "phone_number": null,
+    "phone_number": "(212) 987-6543",
     "email": null,
     "tags": "friend",
     "id": 7
@@ -43,7 +36,7 @@
   },
   {
     "full_name": "Laren",
-    "phone_number": "123",
+    "phone_number": null,
     "email": null,
     "tags": "friend,school",
     "id": 14
@@ -54,5 +47,19 @@
     "email": null,
     "tags": "friend,school",
     "id": 15
+  },
+  {
+    "full_name": "Carlos M.",
+    "phone_number": null,
+    "email": "carlos@formeremployer.com",
+    "tags": "work",
+    "id": 16
+  },
+  {
+    "full_name": "Ady G.",
+    "phone_number": "+62 818 123456",
+    "email": null,
+    "tags": "friend,family",
+    "id": 17
   }
 ]

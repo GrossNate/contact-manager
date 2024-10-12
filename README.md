@@ -23,7 +23,7 @@
 1. Only the name field is required and the only requirement for it is that it
    must contain one non-whitespace character.
 2. If you put in a phone number, it can only contain digits or the special
-   characters "<pre>()+- ,*#.</pre>". It also must contain at least one digit.
+   characters "()+- ,*#.". It also must contain at least one digit.
    Beyond that there is no other validation. This is because there's a huge
    variety of ways to express valid phone numbers and I've personally been
    inconvenienced many times by overzealous phone number validation.
