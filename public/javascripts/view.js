@@ -1,7 +1,11 @@
+import { ContactFormWidget } from "./contactFormWidget.js";
+
 /** @module View */
 
 export class View {
   #document;
+  #addContactHandler;
+  #getAvailableTags;
 
   // Handlebars templates
   #contactListTemplate;
@@ -9,48 +13,40 @@ export class View {
 
   // Page parts
   #contactList;
-  #addContactDialog;
   #searchTagSelector;
   #searchInputText;
-  #addContactExistingTags;
-  #addContactForm;
-  #editContactDialog;
-  /**
-   * @private
-   * @type {HTMLFormElement}
-   * */
-  #editContactForm;
-  #editContactExistingTags;
+  #contactFormWidget;
+
+  #handleDeleteCallback;
+  #getContactCallback;
 
   /**
    * @param {Document} document
    */
   constructor(document) {
     this.#document = document;
+
+    // Extract all relevant elements from the DOM
     this.#contactList = this.#document.querySelector("#contactList");
-    this.#addContactDialog = this.#document.querySelector("#addContactDialog");
     this.#searchTagSelector =
       this.#document.querySelector("#searchTagSelector");
     this.#searchInputText = this.#document.querySelector("#searchInputText");
-    this.#addContactExistingTags = this.#document.querySelector(
-      "#addContactExistingTags"
-    );
-    this.#addContactForm = this.#document.querySelector("#addContactForm");
-    this.#editContactDialog =
-      this.#document.querySelector("#editContactDialog");
-    this.#editContactForm = this.#document.querySelector("#editContactForm");
-    this.#editContactExistingTags = this.#document.querySelector(
-      "#editContactExistingTags"
+
+    this.#contactFormWidget = new ContactFormWidget(
+      this.#document.getElementById("contactForm"),
+      this.#document.getElementById("contactFormDialog")
     );
 
     // Set up all Handlebars templates
     const contactPartial = this.#document.querySelector("#contactPartial");
     Handlebars.registerPartial("contactPartial", contactPartial.innerHTML);
-    contactPartial.remove(); // Not necessary, but keeps the DOM cleaner.
 
-    const tagPartial = this.#document.querySelector("#tagPartial");
-    Handlebars.registerPartial("tagPartial", tagPartial.innerHTML);
-    tagPartial.remove(); // Not necessary, but keeps the DOM cleaner.
+    const displayTagPartial =
+      this.#document.querySelector("#displayTagPartial");
+    Handlebars.registerPartial(
+      "displayTagPartial",
+      displayTagPartial.innerHTML
+    );
 
     const contactListTemplate = this.#document.querySelector(
       "#contactListTemplate"
@@ -66,133 +62,64 @@ export class View {
     this.#tagSelectorTemplate = Handlebars.compile(
       tagSelectorTemplate.innerHTML
     );
-    tagSelectorTemplate.remove();
 
     // Add event listeners for controls that don't interact with model
     this.#document
       .querySelector("#addContactButton")
       .addEventListener("click", (event) => {
         event.preventDefault();
-        this.#addContactDialog.showModal();
+        this.#contactFormWidget.initContactForm(
+          this.#getAvailableTags(),
+          this.#addContactHandler
+        );
+        this.#contactFormWidget.show();
       });
-
-    this.#addContactDialog
-      .querySelector("input[value='Cancel']")
-      .addEventListener("click", (event) => {
-        event.preventDefault();
-        this.clearAndCloseAddContactDialog();
-      });
-
-    this.#editContactDialog
-      .querySelector("input[value='Cancel']")
-      .addEventListener("click", (event) => {
-        event.preventDefault();
-        this.#editContactDialog.close();
-      });
-    
-    this.#editContactExistingTags.addEventListener("click", (event) => {
-      if (event.target.classList.contains("tag")) {
-        const tagClicked = event.target.dataset.tag;
-        const tagDataset = this.#editContactExistingTags.dataset;
-        if (
-          tagDataset.tags
-            .split(",")
-            .includes(tagClicked)
-        ) {
-          tagDataset.tags = tagDataset.tags.split(",").filter((tag) =>
-            tag != tagClicked
-          ).join(",");
-          event.target.classList.remove("selected");
-        } else {
-          tagDataset.tags = tagDataset.tags.split(",").concat(tagClicked).join(
-            ",",
+      
+    this.#contactList.addEventListener(
+      "click",
+      async (event) => {
+        if (event.target.classList.contains("deleteButton")) {
+          event.preventDefault();
+          let contactDeleted = await this.#handleDeleteCallback(event.target.dataset.id);
+          if (!contactDeleted) {
+            alert("Couldn't delete!");
+          }
+        } else if (event.target.classList.contains("editButton")) {
+          event.preventDefault();
+          this.#contactFormWidget.initContactForm(
+            this.#getAvailableTags(),
+            this.#addContactHandler,
+            await this.#getContactCallback(event.target.dataset.id)
           );
-          event.target.classList.add("selected");
+          this.#contactFormWidget.show();
         }
-      }
-    });
-    this.#addContactExistingTags.addEventListener("click", (event) => {
-      if (event.target.classList.contains("tag")) {
-        const tagClicked = event.target.dataset.tag;
-        const tagDataset = this.#addContactExistingTags.dataset;
-        if (
-          tagDataset.tags
-            .split(",")
-            .includes(tagClicked)
-        ) {
-          tagDataset.tags = tagDataset.tags.split(",").filter((tag) =>
-            tag != tagClicked
-          ).join(",");
-          event.target.classList.remove("selected");
-        } else {
-          tagDataset.tags = tagDataset.tags.split(",").concat(tagClicked).join(
-            ",",
-          );
-          event.target.classList.add("selected");
-        }
-      }
-    });
-  }
-
-  clearAndCloseAddContactDialog() {
-    this.#addContactForm.reset();
-    this.#addContactExistingTags.dataset.tags = "";
-    Array.from(this.#addContactExistingTags.querySelectorAll(".tag")).forEach(
-      (span) => span.classList.remove("selected")
+      },
     );
-    this.#addContactDialog.close();
+
   }
 
-  /**
-   *
-   * @param {Contact} contact
-   */
-  showEditContactDialog(contact) {
-    const editContactForm = this.#editContactForm;
-    editContactForm.elements.full_name.value = contact.full_name;
-    editContactForm.elements.phone_number.value = contact.phone_number;
-    editContactForm.elements.email.value = contact.email;
-    editContactForm.elements.id.value = contact.id;
-    this.#editContactExistingTags.dataset.tags = contact.tags
-      .map(({ tag }) => tag)
-      .join(",");
-    const tagElements = Array.from(
-      this.#editContactExistingTags.getElementsByClassName("tag")
-    );
-    tagElements.forEach(span => span.classList.remove("selected"));
-    tagElements
-      .filter((span) =>
-        contact.tags.map(({ tag }) => tag).includes(span.dataset.tag)
-      )
-      .forEach((span) => {
-        span.classList.add("selected");
-      });
-    this.#editContactDialog.showModal();
+  setGetAvailableTagsFunction(callback) {
+    this.#getAvailableTags = callback;
   }
 
-  getContactList() {
-    return this.#contactList;
+  setAddContactHandler(callback) {
+    this.#addContactHandler = callback;
   }
-  getAddContactExistingTags() {
-    return this.#addContactExistingTags;
+  
+  setHandleDeleteCallback(callback) {
+    this.#handleDeleteCallback = callback;
   }
-  getAddContactForm() {
-    return this.#addContactForm;
+
+  setGetContactCallback(callback) {
+    this.#getContactCallback = callback;
   }
-  getEditContactForm() {
-    return this.#editContactForm;
-  }
+
+
   getSearchTagSelector() {
     return this.#searchTagSelector;
   }
   getSearchInputText() {
     return this.#searchInputText;
-  }
-  getAddContactExistingTags() {
-    return this.#addContactExistingTags;
-  }
-  getEditContactExistingTags() {
-    return this.#editContactExistingTags;
   }
 
   renderContactList(contacts) {

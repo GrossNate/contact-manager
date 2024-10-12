@@ -1,151 +1,99 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Nate's Simple Contact Manager</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300;400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="stylesheets/normalize.css" />
-    <link rel="stylesheet" href="stylesheets/contact_manager.css" />
-    <!-- <script src="/javascripts/jquery.js"></script> -->
-    <script src="/javascripts/handlebars.js"></script>
-    <script type="module" src="/javascripts/contact_manager.js"></script>
-  </head>
-  <body>
-    <header>
-      <h1>Nate's Simple Contact Manager</h1>
-    </header>
-    <nav>
-      <table>
-        <tr>
-          <td>
-            <input type="button" id="addContactButton" value="Add Contact" />
-          </td>
-          <td>
-            <input
-              type="text"
-              autocomplete="off"
-              id="searchInputText"
-              placeholder="Search"
-              name="searchInputText"
-            />
-          </td>
-        </tr>
-        <tr>
-          <td></td>
-          <td data-selected-tags data-excluded-tags id="searchTagSelector"></td>
-        </tr>
-      </table>
-    </nav>
-    <main>
-      <p id="loadingP">Loading . . .</p>
-      <ul id="contactList"></ul>
-      <dialog id="addContactDialog">
-        <form id="addContactForm">
-          <table>
-            <tr>
-              <td>
-                <label for="full_name">Name</label>
-              </td>
-              <td>
-                <input type="text" name="full_name" />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label for="phone_number">Phone</label>
-              </td>
-              <td>
-                <input type="text" name="phone_number" />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label for="email">Email</label>
-              </td>
-              <td>
-                <input type="email" name="email" />
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                <span id="addContactExistingTags" data-tags=""></span>
-                <input
-                  type="text"
-                  id="addContactNewTagsInput"
-                  name="addContactNewTagsInput"
-                  placeholder="new tags (space-separated)"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                <input type="submit" value="Add" />
-                <input type="button" value="Cancel" />
-              </td>
-            </tr>
-          </table>
-        </form>
-      </dialog>
-      <dialog id="editContactDialog">
-        <form id="editContactForm">
-          <table>
-            <tr>
-              <td>
-                <label for="full_name">Name</label>
-              </td>
-              <td>
-                <input type="text" name="full_name" />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label for="phone_number">Phone</label>
-              </td>
-              <td>
-                <input type="text" name="phone_number" />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label for="email">Email</label>
-              </td>
-              <td>
-                <input type="email" name="email" />
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                <span id="editContactExistingTags" data-tags=""></span>
-                <input
-                  type="text"
-                  id="editContactNewTagsInput"
-                  name="editContactNewTagsInput"
-                  placeholder="new tags (space-separated)"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                <input type="hidden" name="id">
-                <input type="submit" value="Commit edit" />
-                <input type="button" value="Cancel" />
-              </td>
-            </tr>
-          </table>
-        </form>
-      </dialog>
-    </main>
-    <footer>
-      Because I'm excited about semantic HTML5 elements, here's a footer!
-    </footer>
-    <script id="contactListTemplate" type="text/x-handlebars">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Nate's Simple Contact Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="stylesheets/normalize.css" />
+  <link rel="stylesheet" href="stylesheets/contact_manager.css" />
+  <script src="/javascripts/handlebars.js"></script>
+  <script type="module" src="/javascripts/contact_manager.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1>Nate's Simple Contact Manager</h1>
+  </header>
+  <nav>
+    <table>
+      <tr>
+        <td>
+          <input type="button" id="addContactButton" value="Add Contact" />
+        </td>
+        <td>
+          <input type="text" autocomplete="off" id="searchInputText" placeholder="Search" name="searchInputText" />
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td data-selected-tags data-excluded-tags id="searchTagSelector"></td>
+      </tr>
+    </table>
+  </nav>
+  <main>
+    <p id="loadingP">Loading . . .</p>
+    <ul id="contactList"></ul>
+    <dialog id="contactFormDialog">
+      <form id="contactForm">
+        <table>
+          <tr>
+            <td>
+              <label for="full_name">Name</label>
+            </td>
+            <td>
+              <input type="text" name="full_name" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="phone_number">Phone</label>
+            </td>
+            <td>
+              <input type="text" name="phone_number" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="email">Email</label>
+            </td>
+            <td>
+              <input type="email" name="email" />
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <span id="contactExistingTagsSelectionSpan"></span>
+              <input type="text" id="contactNewTagsInput" name="contactNewTagsInput"
+                placeholder="new tags (space-separated)" />
+              <input type="hidden" id="tags" name="tags" />
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <input type="hidden" name="id">
+              <input type="submit" value="Submit" />
+              <input type="button" id="cancel" value="Cancel" />
+            </td>
+          </tr>
+        </table>
+      </form>
+      <script id="tagSelectorTemplate" type="text/x-handlebars">
+        {{#each tags}}
+          {{#if tag}}
+          <span class="tag" data-tag="{{tag}}">{{tag}}</span>
+          {{else}}
+          <span class="tag" data-tag="{{this}}">{{this}}</span>
+          {{/if}}
+        {{/each}}
+      </script>
+    </dialog>
+  </main>
+  <script id="contactListTemplate" type="text/x-handlebars">
         {{#if contacts}}
         {{#each contacts}}
         {{> contactPartial}}
@@ -153,8 +101,8 @@
         {{else}}
         <li>No contacts yet. Click "Add Contact" above to get started!</li>
         {{/if}}
-    </script>
-    <script id="contactPartial" type="text/x-handlebars">
+  </script>
+  <script id="contactPartial" type="text/x-handlebars">
         <li>
           <dl>
             <dt>Name</dt>
@@ -169,30 +117,22 @@
             <dt>Tags</dt>
             <dd class="tagDd">
               {{#each tags}}
-              {{> tagPartial}}
+              {{> displayTagPartial}}
               {{/each}}
             </dd>
           </dl>
           <input type="button" class="editButton" data-id="{{id}}" value="✏︎ Edit">
           <input type="button" class="deleteButton" data-id="{{id}}" value="🗑️ Delete">
         </li>
-    </script>
-    <script id="tagPartial" type="text/x-handlebars">
+  </script>
+  <script id="displayTagPartial" type="text/x-handlebars">
       <span
-        {{#if selected}}
-        class="tag selected"
-        {{else}}
         class="tag"
-        {{/if}}
-        data-tag="{{tag}}"
+        data-tag="{{this}}"
       >
-        {{tag}}
+        {{this}}
       </span>
     </script>
-    <script id="tagSelectorTemplate" type="text/x-handlebars">
-      {{#each tags}}
-      {{> tagPartial}}
-      {{/each}}
-    </script>
-  </body>
+</body>
+
 </html>

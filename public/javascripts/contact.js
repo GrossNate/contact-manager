@@ -2,8 +2,8 @@
 
 export class Contact {
   /**
-   * 
-   * @param {Object} contactBareObj 
+   *
+   * @param {Object} contactBareObj
    */
   constructor(contactBareObj) {
     this.id = contactBareObj.id;
@@ -13,29 +13,18 @@ export class Contact {
     /**
      * @type {Object[]}
      */
-    this.tags = (contactBareObj.tags
-      ?.split(",")
-      .sort()
-      .filter(tagStr => tagStr != '')
-      .map((tag) => ({
-        tag: tag,
-      })) || []);
-  }
-  
-  /**
-   * Gets the tags as an array of strings.
-   * @returns {string[]}
-   */
-  getTagsArr() {
-    return this.tags.map(tagObj => tagObj.tag);
+    this.tags =
+      contactBareObj.tags
+        ?.split(",")
+        .sort()
+        .filter((tagStr) => tagStr != "") || [];
   }
 
   /**
-   * Gets the tags as a tab-delimited string. 
+   * Gets the tags as a tab-delimited string.
    * @returns {string}
    */
   getTagsStr() {
-    return this.getTagsArr().join(",");
+    return this.tags.join(",");
   }
-  
 }
