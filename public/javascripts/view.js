@@ -38,31 +38,20 @@ export class View {
     );
 
     // Set up all Handlebars templates
-    const contactPartial = this.#document.querySelector("#contactPartial");
-    Handlebars.registerPartial("contactPartial", contactPartial.innerHTML);
-    
-    const tagListTemplate = this.#document.querySelector(
-      "#tagListTemplate"
-    );
-    this.#tagListTemplate = Handlebars.compile(
-      tagListTemplate.innerHTML
-    );
     Handlebars.registerPartial(
-      "tagListTemplate",
-      tagListTemplate.innerHTML
+      "contactPartial",
+      this.#document.querySelector("#contactPartial").innerHTML
     );
 
-    const contactListTemplate = this.#document.querySelector(
-      "#contactListTemplate"
-    );
+    const tagListTemplate = this.#document.querySelector("#tagListTemplate");
+    this.#tagListTemplate = Handlebars.compile(tagListTemplate.innerHTML);
+    Handlebars.registerPartial("tagListTemplate", tagListTemplate.innerHTML);
+
     this.#contactListTemplate = Handlebars.compile(
-      contactListTemplate.innerHTML
+      this.#document.querySelector("#contactListTemplate").innerHTML
     );
-    contactListTemplate.remove();
 
-
-
-    // Add event listeners for controls that don't interact with model
+    // Add event listeners.
     this.#document
       .querySelector("#addContactButton")
       .addEventListener("click", (event) => {
@@ -73,28 +62,26 @@ export class View {
         );
         this.#contactFormWidget.show();
       });
-      
-    this.#contactList.addEventListener(
-      "click",
-      async (event) => {
-        if (event.target.classList.contains("deleteButton")) {
-          event.preventDefault();
-          let contactDeleted = await this.#handleDeleteCallback(event.target.dataset.id);
-          if (!contactDeleted) {
-            alert("Couldn't delete!");
-          }
-        } else if (event.target.classList.contains("editButton")) {
-          event.preventDefault();
-          this.#contactFormWidget.initContactForm(
-            this.#getAvailableTags(),
-            this.#addContactHandler,
-            await this.#getContactCallback(event.target.dataset.id)
-          );
-          this.#contactFormWidget.show();
-        }
-      },
-    );
 
+    this.#contactList.addEventListener("click", async (event) => {
+      if (event.target.classList.contains("deleteButton")) {
+        event.preventDefault();
+        let contactDeleted = await this.#handleDeleteCallback(
+          event.target.dataset.id
+        );
+        if (!contactDeleted) {
+          alert("Couldn't delete!");
+        }
+      } else if (event.target.classList.contains("editButton")) {
+        event.preventDefault();
+        this.#contactFormWidget.initContactForm(
+          this.#getAvailableTags(),
+          this.#addContactHandler,
+          await this.#getContactCallback(event.target.dataset.id)
+        );
+        this.#contactFormWidget.show();
+      }
+    });
   }
 
   setGetAvailableTagsFunction(callback) {
@@ -104,7 +91,7 @@ export class View {
   setAddContactHandler(callback) {
     this.#addContactHandler = callback;
   }
-  
+
   setHandleDeleteCallback(callback) {
     this.#handleDeleteCallback = callback;
   }
@@ -112,7 +99,6 @@ export class View {
   setGetContactCallback(callback) {
     this.#getContactCallback = callback;
   }
-
 
   getSearchTagSelector() {
     return this.#searchTagSelector;
