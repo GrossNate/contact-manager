@@ -54,26 +54,5 @@
     "email": null,
     "tags": "friend,school",
     "id": 15
-  },
-  {
-    "full_name": "Jay",
-    "phone_number": null,
-    "email": null,
-    "tags": "family,uncle",
-    "id": 16
-  },
-  {
-    "full_name": "Katie",
-    "phone_number": null,
-    "email": null,
-    "tags": "family,mother",
-    "id": 17
-  },
-  {
-    "full_name": "Foo",
-    "phone_number": "456",
-    "email": "foobar@booofarbuzqux.com",
-    "tags": "family,fizzbuzztrix,school,uncle",
-    "id": 18
   }
 ]
