@@ -143,10 +143,4 @@ export class ContactFormWidget {
     }
   }
 
-  /**
-   *
-   * @param {Contact} contact
-   * @param {string[]} existingTags
-   */
-  initEditContactForm(contact, existingTags) {}
 }
