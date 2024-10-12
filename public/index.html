@@ -46,7 +46,7 @@
               <label for="full_name">Name</label>
             </td>
             <td>
-              <input type="text" name="full_name" />
+              <input type="text" name="full_name" required />
             </td>
           </tr>
           <tr>
@@ -54,7 +54,7 @@
               <label for="phone_number">Phone</label>
             </td>
             <td>
-              <input type="text" name="phone_number" />
+              <input type="text" name="phone_number" pattern="[\d \+\-,\*\#]+" />
             </td>
           </tr>
           <tr>
@@ -69,7 +69,8 @@
             <td colspan="2">
               <span id="contactExistingTagsSelectionSpan"></span>
               <input type="text" id="contactNewTagsInput" name="contactNewTagsInput"
-                placeholder="new tags (space-separated)" />
+                placeholder="new tags (space-separated)"
+                pattern="[^,]+" />
               <input type="hidden" id="tags" name="tags" />
             </td>
           </tr>
@@ -99,7 +100,7 @@
         {{> contactPartial}}
         {{/each}}
         {{else}}
-        <li>No contacts yet. Click "Add Contact" above to get started!</li>
+        <li>No contacts to display. Click "Add Contact" above if you'd like to add one!</li>
         {{/if}}
   </script>
   <script id="contactPartial" type="text/x-handlebars">

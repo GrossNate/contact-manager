@@ -64,7 +64,6 @@ export class Controller {
   /**
    * @param {DOMStringMap} dataset
    * @param {string} slot
-   * @param {string} value
    * @return {string[]}
    */
   static getValuesFromDatasetSlot(dataset, slot) {
@@ -154,31 +153,5 @@ export class Controller {
         this.#refreshSearch();
       }
     });
-  }
-
-  // Event Handlers
-  async #handleAddContactSubmit(event) {
-    event.preventDefault();
-    const formData = new FormData(this.#view.getAddContactForm());
-    const newTagsArr = formData.get("addContactNewTagsInput").split(" ");
-    const existingTagsArr = this.#view
-      .getAddContactExistingTags()
-      .dataset.tags.split(",");
-    formData.set(
-      "tags",
-      newTagsArr
-        .concat(existingTagsArr)
-        .filter((tag) => tag != "")
-        .join(",")
-    );
-    formData.delete("addContactNewTagsInput");
-
-    let result = await this.#model.addOrUpdateContact(formData);
-    if (result) {
-      this.refreshView();
-      this.#view.clearAndCloseAddContactDialog();
-    } else {
-      alert("Failure!");
-    }
   }
 }
