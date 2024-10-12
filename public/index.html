@@ -69,8 +69,7 @@
             <td colspan="2">
               <span id="contactExistingTagsSelectionSpan"></span>
               <input type="text" id="contactNewTagsInput" name="contactNewTagsInput"
-                placeholder="new tags (space-separated)"
-                pattern="[^,]+" />
+                placeholder="new tags (space-separated)" pattern="[^,]+" />
               <input type="hidden" id="tags" name="tags" />
             </td>
           </tr>
@@ -83,13 +82,9 @@
           </tr>
         </table>
       </form>
-      <script id="tagSelectorTemplate" type="text/x-handlebars">
+      <script id="tagListTemplate" type="text/x-handlebars">
         {{#each tags}}
-          {{#if tag}}
-          <span class="tag" data-tag="{{tag}}">{{tag}}</span>
-          {{else}}
           <span class="tag" data-tag="{{this}}">{{this}}</span>
-          {{/if}}
         {{/each}}
       </script>
     </dialog>
@@ -117,23 +112,12 @@
 
             <dt>Tags</dt>
             <dd class="tagDd">
-              {{#each tags}}
-              {{> displayTagPartial}}
-              {{/each}}
+              {{> tagListTemplate}}
             </dd>
           </dl>
           <input type="button" class="editButton" data-id="{{id}}" value="✏︎ Edit">
           <input type="button" class="deleteButton" data-id="{{id}}" value="🗑️ Delete">
         </li>
   </script>
-  <script id="displayTagPartial" type="text/x-handlebars">
-      <span
-        class="tag"
-        data-tag="{{this}}"
-      >
-        {{this}}
-      </span>
-    </script>
 </body>
-
 </html>

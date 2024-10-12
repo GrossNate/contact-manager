@@ -9,7 +9,7 @@ export class View {
 
   // Handlebars templates
   #contactListTemplate;
-  #tagSelectorTemplate;
+  #tagListTemplate;
 
   // Page parts
   #contactList;
@@ -40,12 +40,16 @@ export class View {
     // Set up all Handlebars templates
     const contactPartial = this.#document.querySelector("#contactPartial");
     Handlebars.registerPartial("contactPartial", contactPartial.innerHTML);
-
-    const displayTagPartial =
-      this.#document.querySelector("#displayTagPartial");
+    
+    const tagListTemplate = this.#document.querySelector(
+      "#tagListTemplate"
+    );
+    this.#tagListTemplate = Handlebars.compile(
+      tagListTemplate.innerHTML
+    );
     Handlebars.registerPartial(
-      "displayTagPartial",
-      displayTagPartial.innerHTML
+      "tagListTemplate",
+      tagListTemplate.innerHTML
     );
 
     const contactListTemplate = this.#document.querySelector(
@@ -56,12 +60,7 @@ export class View {
     );
     contactListTemplate.remove();
 
-    const tagSelectorTemplate = this.#document.querySelector(
-      "#tagSelectorTemplate"
-    );
-    this.#tagSelectorTemplate = Handlebars.compile(
-      tagSelectorTemplate.innerHTML
-    );
+
 
     // Add event listeners for controls that don't interact with model
     this.#document
@@ -127,7 +126,7 @@ export class View {
   }
 
   renderExistingTagsSelector(existingTags, tagContainer) {
-    tagContainer.innerHTML = this.#tagSelectorTemplate({
+    tagContainer.innerHTML = this.#tagListTemplate({
       tags: existingTags,
     });
   }

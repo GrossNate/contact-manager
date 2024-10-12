@@ -3,7 +3,7 @@ import { Contact } from "./contact.js";
 export class ContactFormWidget {
   #form;
   #dialog;
-  #tagSelectorTemplate;
+  #tagListTemplate;
   #contactExistingTagsSelectionSpan;
   #handleDataCallback;
 
@@ -29,11 +29,8 @@ export class ContactFormWidget {
     );
 
     // Register Handlebars template.
-    const tagSelectorTemplate = this.#dialog.querySelector(
-      "#tagSelectorTemplate"
-    );
-    this.#tagSelectorTemplate = Handlebars.compile(
-      tagSelectorTemplate.innerHTML
+    this.#tagListTemplate = Handlebars.compile(
+      this.#dialog.querySelector("#tagListTemplate").innerHTML
     );
 
     // Register event handler for tag interface.
@@ -70,7 +67,7 @@ export class ContactFormWidget {
       const result = await this.#handleDataCallback(formData);
       if (result) {
         this.#form.reset();
-        this.#form.elements.id.value = '';
+        this.#form.elements.id.value = "";
         this.hide();
       } else {
         alert("Failure!");
@@ -114,7 +111,7 @@ export class ContactFormWidget {
    * @param {HTMLSpanElement} tagContainer
    */
   #renderExistingTagsSelector(existingTags, tagContainer) {
-    tagContainer.innerHTML = this.#tagSelectorTemplate({
+    tagContainer.innerHTML = this.#tagListTemplate({
       tags: existingTags,
     });
   }

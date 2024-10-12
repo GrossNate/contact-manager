@@ -172,7 +172,6 @@ export class Model {
           uniqueTags.push(tag);
         }
         return uniqueTags;
-      }, [])
-      .map((tagString) => ({ tag: tagString }));
+      }, []);
   };
 }
