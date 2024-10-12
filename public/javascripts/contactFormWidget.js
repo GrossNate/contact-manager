@@ -164,6 +164,7 @@ export class ContactFormWidget {
       existingTags,
       this.#form.querySelector("#contactExistingTagsSelectionSpan")
     );
+    this.#form.elements.tags.value = "";
     this.#handleDataCallback = addContactDataHandler;
     if (contact) {
       this.#form.elements.full_name.value = contact.full_name;
